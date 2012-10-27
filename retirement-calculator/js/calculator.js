@@ -1,16 +1,18 @@
 function getInput() {
 	var input = {}
 
-	input.age_joined = parseInt($('#age_joined').val());
-	input.starting_salary = $('#start_salary').spinner("value");
-	input.age_retired = parseInt($('#age_retired').val());
-	input.state_match = $('#state_match').spinner("value");
+	input.ageJoined = parseInt($('#age_joined').val());
+	input.ageRetired = parseInt($('#age_retired').val());
+	input.ageDeath = parseInt($('#age_death').val());
 
-	input.annual_salary_increase = $('#annual_salary_increase').spinner("value");
-	input.age_death = parseInt($('#age_death').val());
-	input.employee_contribution = $('#employee_contribution').spinner("value");
-	input.surs_net_earnings = $('#surs_net_earnings').spinner("value");
-	input.annual_retirement_increase = $('#annual_retirement_increase').spinner("value");
+	input.startingSalary = parseInt($('#start_salary').spinner("value"));
+	input.employeeContribution = parseInt($('#employee_contribution').spinner("value"));
+	input.stateContribution = parseInt($('#stateContribution').spinner("value"));
+
+	input.annualSalaryIncrease = parseInt($('#annual_salary_increase').spinner("value"));
+
+	input.sursNetEarnings = parseInt($('#surs_net_earnings').spinner("value"));
+	input.annualRetirementIncrease = parseInt($('#annual_retirement_increase').spinner("value"));
 
 	return input;
 }
@@ -29,25 +31,25 @@ function validate(input) {
 	var min_age_retired = 10;
 	var min_age_death = 10;
 
-	if (input.age_joined < min_age) {
+	if (input.ageJoined < min_age) {
 		problems.push("The age you joined SURS must be at least " + min_age);
 	}
-	if (input.starting_salary < min_salary) {
+	if (input.startingSalary < min_salary) {
 		problems.push("Your starting salary must be at least " + min_salary);
 	}
-	if (input.age_retired < min_age_retired) {
+	if (input.ageRetired < min_age_retired) {
 		problems.push("Your retirement age must be at least " + min_age_retired);
 	}
-	if (input.age_retired <= input.age_joined) {
+	if (input.ageRetired <= input.ageJoined) {
 		problems.push("Your age at retirement must be greater than the age you joined SURS");
 	}
-	if (input.state_match < 0 || input.state_match > 100) {
+	if (input.stateMatch < 0 || input.stateMatch > 100) {
 		problems.push("The state match percentage must be between 0% and 100%");
 	}
-	if (input.age_death < min_age_death) {
+	if (input.ageDeath < min_age_death) {
 		problems.push("Your age at death must be at least " + min_age_death);
 	}
-	if (input.age_death <= input.age_retired) {
+	if (input.ageDeath <= input.ageRetired) {
 		problems.push("Your age at death must be greater than your retirement age");
 	}
 
@@ -81,7 +83,7 @@ function recalculate() {
 			var year = output.years[i];
 
 			var tr = $('<tr>');
-			if (year.age >= input.age_retired) {
+			if (year.age >= input.ageRetired) {
 				tr.addClass('in-retirement');
 			}
 
@@ -169,18 +171,47 @@ function tier1Table() {
 
 function calculate(input) {
 	var output = {};
-	output.years = []
 
-	for ( var i = 24; i < 100; i++) {
-		output.years.push({
-			"age" : i,
-			"salary" : 2,
-			"annuity" : 3,
-			"employeeContribution" : 4,
-			"stateContribution" : 5,
-			"sursEarnings" : 6,
-			"retirementFundBalance" : 7
-		});
+	input.ageJoined
+	input.startingSalary
+	input.ageRetired
+	input.stateMatch
+	input.annualSalaryIncrease
+	input.ageDeath
+	input.employeeContribution
+	input.sursNetEarnings
+	input.annualRetirementIncrease
+
+	var check = 0;
+
+	var zero = new window.BigDecimal('0');
+	var one = new window.BigDecimal('1');
+	var oneHundred = new window.BigDecimal('100');
+
+	// Convert the 0-100 percentage integers in the input object to decimal
+	var annualSalaryIncrease = new window.BigDecimal(input.annualSalaryIncrease + '').divide(oneHundred).add(one);
+	var employeeContribution = new window.BigDecimal(input.employeeContribution + '').divide(oneHundred);
+	var stateContribution = new window.BigDecimal(input.stateContribution + '').divide(oneHundred);
+	var sursNetEarnings = new window.BigDecimal(input.sursNetEarnings + '').divide(oneHundred).add(one);
+	var annualRetirementIncrease = new window.BigDecimal(input.annualRetirementIncrease + '').divide(oneHundred).add(
+			one);
+
+	output.years = []
+	for ( var y = 0; y <= input.ageDeath - input.ageJoined; y++) {
+		yearData = {};
+		yearData.age = input.ageJoined + y;
+
+		if (y == 0) {
+			yearData.salary = new window.BigDecimal(input.startingSalary + '');
+			yearData.annuity = zero;
+			yearData.employeeContribution = yearData.salary.multiply(employeeContribution);
+			yearData.stateContribution = yearData.salary.multiply(stateContribution);
+		} else {
+			lastYearData = output.years[y - 1];
+
+			yearData.salary = lastYearData.salary.multiply(annualSalaryIncrease);
+		}
+		output.years.push(yearData);
 	}
 
 	return output;
@@ -194,7 +225,7 @@ function formatDollars(value, points) {
 	var regex = /(\d+)(\d{3})/;
 	var result = ((isNaN(value) ? 0 : Math.abs(value)).toFixed(points)) + '';
 
-	while (regex.test(result) && options.group) {
+	while (regex.test(result)) {
 		result = result.replace(regex, '$1,$2');
 	}
 

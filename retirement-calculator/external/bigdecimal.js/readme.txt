@@ -1,0 +1,1 @@
+https://github.com/iriscouch/bigdecimal.js
