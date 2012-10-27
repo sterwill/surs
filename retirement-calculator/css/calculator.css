@@ -48,8 +48,11 @@ table#results th {
 	vertical-align: bottom;
 }
 
+table#results tr.in-retirement {
+	background-color: lightblue;
+}
+
 table#results colgroup#contributions {
-	background-color: yellow;
 }
 
 div.field {

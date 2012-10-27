@@ -82,6 +82,9 @@ function calculate() {
 
 			var tr = $('<tr>');
 			tr.appendTo(tbody);
+			if (year.age >= input.age_retired) {
+				tr.addClass('in-retirement');
+			}
 
 			var tdAge = $('<td>');
 			tdAge.appendTo(tr);
@@ -121,22 +124,28 @@ function calculateOutput(input) {
 	var output = {};
 	output.years = []
 
-	output.years.push({
-		"age" : 1,
-		"salary" : 2,
-		"annuity" : 3,
-		"employeeContribution" : 4,
-		"stateContribution" : 5,
-		"sursEarnings" : 6,
-		"retirementFundBalance" : 7
-	})
+	for ( var i = 24; i < 100; i++) {
+		output.years.push({
+			"age" : i,
+			"salary" : 2,
+			"annuity" : 3,
+			"employeeContribution" : 4,
+			"stateContribution" : 5,
+			"sursEarnings" : 6,
+			"retirementFundBalance" : 7
+		});
+	}
 
 	return output;
 }
 
-function formatDollars(value) {
+function formatDollars(value, points) {
+	if (points == null) {
+		points = 0;
+	}
+
 	var regex = /(\d+)(\d{3})/;
-	var result = ((isNaN(value) ? 0 : Math.abs(value)).toFixed(2)) + '';
+	var result = ((isNaN(value) ? 0 : Math.abs(value)).toFixed(points)) + '';
 
 	while (regex.test(result) && options.group) {
 		result = result.replace(regex, '$1,$2');
