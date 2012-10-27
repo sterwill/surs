@@ -7,7 +7,7 @@
 	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/ui-lightness/jquery-ui.css" />
 <link rel="stylesheet" href="external/btburnettSpinner/ui.spinner.css" />
 <link rel="stylesheet" href="css/calculator.css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
 <script src="external/btburnettSpinner/ui.spinner.min.js"></script>
 <script src="js/calculator.js"></script>
@@ -15,7 +15,7 @@
 	$(function() {
 		$('input').addClass('ui-widget ui-state-default ui-corner-all');
 		$('input').change(function() {
-			validate();
+			calculate();
 		});
 
 		$('.age').spinner({
@@ -41,6 +41,8 @@
 			places : 1,
 			suffix : '%',
 		});
+
+		calculate();
 	});
 </script>
 <body>
@@ -69,7 +71,7 @@
 				<label>Age at death</label> <input type="number" id="age_death" value="86" size="4" class="age" />
 			</div>
 			<div class="field">
-				<label>Your contribution to retirement</label> <input type="number" id="personal_contribution" value="8" size="8"
+				<label>Your contribution to retirement</label> <input type="number" id="employee_contribution" value="8" size="8"
 					class="spinner-percent" /> <span class="input-suffix">per paycheck</span>
 			</div>
 			<div class="field">
@@ -90,9 +92,15 @@
 
 	<div id="results">
 		<table id="results">
-			<colgroup id="left" span="3" />
-			<colgroup id="contributions" span="2" />
-			<colgroup id="right" span="2" />
+			<col id="age" />
+			<col id="salary" />
+			<col id="annuity" />
+			<colgroup id="contributions" span="2">
+				<col id="employee_contribution" />
+				<col id="state_contribution" />
+			</colgroup>
+			<col id="surs_earnings" />
+			<col id="retirement_fund_balance" />
 			<thead>
 				<tr>
 					<th></th>
@@ -113,6 +121,26 @@
 					</th>
 				</tr>
 			</thead>
+			<tfoot>
+				<tr>
+					<td />
+					<td id="total_salary" />
+					<td id="total_annuity" />
+					<td id="total_employee_contribution" />
+					<td id="total_state_contribution" />
+					<td id="total_surs_earnings" />
+					<td />
+				</tr>
+				<tr>
+					<td />
+					<td />
+					<td />
+					<td id="percent_employee_contribution" />
+					<td id="percent_state_contribution" />
+					<td id="percent_surs_earnings" />
+					<td />
+				</tr>
+			</tfoot>
 			<tbody />
 		</table>
 	</div>
