@@ -6,8 +6,34 @@ input {
 	text-align: right;
 }
 
-#retirement-calculator-form {
+div#retirement-calculator-form {
+	border: 1px solid red;
+	float: left;
+	clear: both;
 	padding: 14px;
+}
+
+div#advanced {
+	border: 1px solid blue;
+	float: left;
+	clear: both;
+}
+
+div#problems {
+	border: 1px solid orange;
+	float: left;
+	clear: both;
+	display: none;
+}
+
+div#problems p {
+	color: #880000;
+}
+
+#results {
+	border: 1px solid green;
+	float: left;
+	clear: both;
 }
 
 div.field {
@@ -21,13 +47,13 @@ div.field label {
 	float: left;
 	width: 300px;
 	text-align: right;
-	margin-right: 4px;
+	margin-right: 12px;
 	margin-top: 4px;
 }
 
 div.field input {
 	float: left;
-	margin-right: 4px;
+	margin-right: 10px;
 }
 
 div.field span.input-suffix {
