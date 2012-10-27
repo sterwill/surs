@@ -1,0 +1,41 @@
+body {
+	
+}
+
+input {
+	text-align: right;
+}
+
+#retirement-calculator-form {
+	padding: 14px;
+}
+
+div.field {
+	float: left;
+	clear: both;
+	margin: 3px 0 3px 0;
+	line-height: 1em;
+}
+
+div.field label {
+	float: left;
+	width: 300px;
+	text-align: right;
+	margin-right: 4px;
+	margin-top: 4px;
+}
+
+div.field input {
+	float: left;
+	margin-right: 4px;
+}
+
+div.field span.input-suffix {
+	float: left;
+	color: #555555;
+	margin-top: 4px;
+}
+
+div.field .ui-spinner {
+	float: left;
+}

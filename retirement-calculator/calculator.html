@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>SURS Retirement Calculator</title>
+<link rel="stylesheet" type="text/css"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/ui-lightness/jquery-ui.css" />
+<link rel="stylesheet" href="external/btburnettSpinner/ui.spinner.css" />
+<link rel="stylesheet" href="css/calculator.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<script src="external/btburnettSpinner/ui.spinner.min.js"></script>
+<script src="js/calculator.js"></script>
+<script>
+	$(function() {
+		$('input').addClass('ui-widget ui-state-default ui-corner-all');
+
+		$('.salary').spinner({
+			min : 0,
+			max : 1000000,
+			step : 1000,
+			start : 28000,
+			prefix : '$',
+			group : ','
+		});
+
+		$('.spinner-percent').spinner({
+			min : 0,
+			max : 100,
+			step : 0.1,
+			places : 1,
+			suffix : '%',
+		});
+	});
+</script>
+<body>
+	<div id="retirement-calculator-form">
+		<div class="field">
+			<label>Age you joined SURS</label> <input type="number" id="age_joined" value="28" size="3" />
+		</div>
+		<div class="field">
+			<label>Starting salary</label> <input type="number" id="start_salary" value="28000" size="12" class="salary" /> <span
+				class="input-suffix">per year</span>
+		</div>
+		<div class="field">
+			<label>Age at retirement</label> <input type="number" id="age_retire" value="61" size="3" />
+		</div>
+		<div class="field">
+			<label>State match</label> <input type="number" id="state_match" value="6.2" size="8" class="spinner-percent" /> <span
+				class="input-suffix">of salary </span>
+		</div>
+		<div class="field">
+			<label>SURS net earnings</label> <input type="number" id="surs_net_earnings" value="7.5" size="8"
+				class="spinner-percent" />
+		</div>
+
+		<div class="advanced">
+			<div class="field">
+				<label>Contribution to retirement</label> <input type="number" id="personal_contribution" value="8" size="8"
+					class="spinner-percent" /> <span class="input-suffix">per paycheck</span>
+			</div>
+			<div class="field">
+				<label>Annual salary increase</label> <input type="number" id="annual_salary_increase" value="3" size="8"
+					class="spinner-percent" />
+			</div>
+			<div class="field">
+				<label>Annual increase in retirement</label> <input type="number" id="annual_retirement_increase" value="3" size="8"
+					class="spinner-percent" />
+			</div>
+			<div class="field">
+				<label>Age at death</label> <input type="number" id="age_death" value="86" size="3" />
+			</div>
+		</div>
+	</div>
+</body>
+</html>
