@@ -7,7 +7,6 @@ input {
 }
 
 div#retirement-calculator-form {
-	border: 1px solid red;
 	float: left;
 	clear: both;
 	padding: 14px;
@@ -30,10 +29,25 @@ div#problems p {
 	color: #880000;
 }
 
-#results {
-	border: 1px solid green;
+div#results {
 	float: left;
 	clear: both;
+}
+
+table#results {
+	border-collapse: collapse;
+}
+
+table#results th {
+	padding: 0 6px 0 6px;
+	vertical-align: bottom;
+}
+
+table#results tr#separator {
+	border: 2px solid black;
+}
+
+table#results colgroup#contributions  {
 }
 
 div.field {

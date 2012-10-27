@@ -15,7 +15,7 @@ function getData() {
 	return data;
 }
 
-function validateAllInputs() {
+function validate() {
 	$('div#problems').hide();
 	$('ul#problems').empty();
 
