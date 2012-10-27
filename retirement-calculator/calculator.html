@@ -15,7 +15,7 @@
 	$(function() {
 		$('input').addClass('ui-widget ui-state-default ui-corner-all');
 		$('input').change(function() {
-			calculate();
+			recalculate();
 		});
 
 		$('.age').spinner({
@@ -42,7 +42,7 @@
 			suffix : '%',
 		});
 
-		calculate();
+		recalculate();
 	});
 </script>
 <body>
