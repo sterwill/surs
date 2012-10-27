@@ -1,25 +1,25 @@
-function getData() {
-	var data = {}
+function getInput() {
+	var input = {}
 
-	data.age_joined = parseInt($('#age_joined').val());
-	data.starting_salary = $('#start_salary').spinner("value");
-	data.age_retired = parseInt($('#age_retired').val());
-	data.state_match = $('#state_match').spinner("value");
+	input.age_joined = parseInt($('#age_joined').val());
+	input.starting_salary = $('#start_salary').spinner("value");
+	input.age_retired = parseInt($('#age_retired').val());
+	input.state_match = $('#state_match').spinner("value");
 
-	data.annual_salary_increase = $('#annual_salary_increase').spinner("value");
-	data.age_death = parseInt($('#age_death').val());
-	data.personal_contribution = $('#personal_contribution').spinner("value");
-	data.surs_net_earnings = $('#surs_net_earnings').spinner("value");
-	data.annual_retirement_increase = $('#annual_retirement_increase').spinner("value");
+	input.annual_salary_increase = $('#annual_salary_increase').spinner("value");
+	input.age_death = parseInt($('#age_death').val());
+	input.personal_contribution = $('#personal_contribution').spinner("value");
+	input.surs_net_earnings = $('#surs_net_earnings').spinner("value");
+	input.annual_retirement_increase = $('#annual_retirement_increase').spinner("value");
 
-	return data;
+	return input;
 }
 
 function validate() {
 	$('div#problems').hide();
 	$('ul#problems').empty();
 
-	var data = getData();
+	var input = getInput();
 
 	var problems = [];
 
@@ -28,26 +28,26 @@ function validate() {
 	var min_age_retired = 10;
 	var min_age_death = 10;
 
-	if (data.age_joined < min_age) {
+	if (input.age_joined < min_age) {
 		problems.push("The age you joined SURS must be at least " + min_age);
 	}
-	if (data.starting_salary < min_salary) {
+	if (input.starting_salary < min_salary) {
 		problems.push("Your starting salary must be at least " + min_salary);
 	}
-	if (data.age_retired < min_age_retired) {
+	if (input.age_retired < min_age_retired) {
 		problems.push("Your retirement age must be at least " + min_age_retired);
 	}
-	if (data.age_retired <= data.age_joined) {
+	if (input.age_retired <= input.age_joined) {
 		problems.push("Your age at retirement must be greater than the age you joined SURS");
 	}
-	if (data.state_match < 0 || data.state_match > 100) {
+	if (input.state_match < 0 || input.state_match > 100) {
 		problems.push("The state match percentage must be between 0% and 100%");
 	}
 
-	if (data.age_death < min_age_death) {
+	if (input.age_death < min_age_death) {
 		problems.push("Your age at death must be at least " + min_age_death);
 	}
-	if (data.age_death <= data.age_retired) {
+	if (input.age_death <= input.age_retired) {
 		problems.push("Your age at death must be greater than your retirement age");
 	}
 
@@ -59,4 +59,11 @@ function validate() {
 			li.appendTo($('ul#problems'));
 		}
 	}
+}
+
+calculate()
+{
+	var input = getInput();
+	
+	
 }
