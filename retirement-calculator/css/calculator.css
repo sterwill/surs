@@ -53,6 +53,11 @@ table#results tr.in-retirement {
 }
 
 table#results colgroup#contributions {
+	
+}
+
+table#results td {
+	padding: 0 6px 0 6px;
 }
 
 div.field {

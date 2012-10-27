@@ -169,6 +169,14 @@ function tier1Table() {
 	return table;
 }
 
+function mathContext() {
+	return window.MathContext.DECIMAL64();
+}
+
+function bd(value) {
+	return new window.BigDecimal(value + '', mathContext());
+}
+
 function calculate(input) {
 	var output = {};
 
@@ -182,19 +190,19 @@ function calculate(input) {
 	input.sursNetEarnings
 	input.annualRetirementIncrease
 
-	var check = 0;
+	// Use this context in all operations
+	var mc = mathContext();
 
-	var zero = new window.BigDecimal('0');
-	var one = new window.BigDecimal('1');
-	var oneHundred = new window.BigDecimal('100');
+	var zero = bd('0');
+	var one = bd('1');
+	var oneHundred = bd('100');
 
 	// Convert the 0-100 percentage integers in the input object to decimal
-	var annualSalaryIncrease = new window.BigDecimal(input.annualSalaryIncrease + '').divide(oneHundred).add(one);
-	var employeeContribution = new window.BigDecimal(input.employeeContribution + '').divide(oneHundred);
-	var stateContribution = new window.BigDecimal(input.stateContribution + '').divide(oneHundred);
-	var sursNetEarnings = new window.BigDecimal(input.sursNetEarnings + '').divide(oneHundred).add(one);
-	var annualRetirementIncrease = new window.BigDecimal(input.annualRetirementIncrease + '').divide(oneHundred).add(
-			one);
+	var annualSalaryIncrease = bd(input.annualSalaryIncrease).divide(oneHundred, mc).add(one);
+	var employeeContribution = bd(input.employeeContribution).divide(oneHundred, mc);
+	var stateContribution = bd(input.stateContribution).divide(oneHundred);
+	var sursNetEarnings = bd(input.sursNetEarnings).divide(oneHundred, mc).add(one);
+	var annualRetirementIncrease = bd(input.annualRetirementIncrease).divide(oneHundred, mc).add(one);
 
 	output.years = []
 	for ( var y = 0; y <= input.ageDeath - input.ageJoined; y++) {
@@ -202,14 +210,16 @@ function calculate(input) {
 		yearData.age = input.ageJoined + y;
 
 		if (y == 0) {
-			yearData.salary = new window.BigDecimal(input.startingSalary + '');
+			yearData.salary = bd(input.startingSalary);
 			yearData.annuity = zero;
-			yearData.employeeContribution = yearData.salary.multiply(employeeContribution);
-			yearData.stateContribution = yearData.salary.multiply(stateContribution);
+			yearData.employeeContribution = yearData.salary.multiply(employeeContribution, mc);
+			yearData.stateContribution = yearData.salary.multiply(stateContribution, mc);
+			yearData.sursEarnings = zero;
+			yearData.retirementFundBalance = yearData.employeeContribution + yearData.stateContribution;
 		} else {
 			lastYearData = output.years[y - 1];
 
-			yearData.salary = lastYearData.salary.multiply(annualSalaryIncrease);
+			yearData.salary = lastYearData.salary.multiply(annualSalaryIncrease, mc);
 		}
 		output.years.push(yearData);
 	}
@@ -218,6 +228,7 @@ function calculate(input) {
 }
 
 function formatDollars(value, points) {
+	return value + '';
 	if (points == null) {
 		points = 0;
 	}
