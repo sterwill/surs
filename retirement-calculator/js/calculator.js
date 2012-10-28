@@ -286,6 +286,7 @@ function calculate(input) {
 
 	var zero = bd('0');
 	var one = bd('1');
+	var negativeOne = bd('-1');
 	var oneHundred = bd('100');
 
 	// Ages can stay a Javascript number
@@ -346,25 +347,16 @@ function calculate(input) {
 							.subtract(thisYear.annuity, mc);
 				} else {
 					thisYear.annuity = lastYear.annuity.multiply(annualRetirementIncrease, mc);
-
-					// The result will be 0 if last year's balance is 0
 					thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
-
-					var availableFunds = lastYear.retirementFundBalance.add(thisYear.sursEarnings, mc);
-
-					// If there aren't enough funds to cover this year's annuity
-					// payment, charge employer the difference
-					if (thisYear.annuity.compareTo(availableFunds) > 0) {
-						thisYear.stateContribution = thisYear.annuity.subtract(availableFunds, mc);
-					}
-
 					thisYear.retirementFundBalance = lastYear.retirementFundBalance.add(thisYear.sursEarnings, mc)
 							.subtract(thisYear.annuity, mc);
 
+					// If the balance went negative after surs earnings, the
+					// state makes up the difference
 					if (thisYear.retirementFundBalance.compareTo(zero) < 0) {
+						thisYear.stateContribution = thisYear.retirementFundBalance.multiply(negativeOne, mc);
 						thisYear.retirementFundBalance = zero;
 					}
-
 				}
 			}
 		}
