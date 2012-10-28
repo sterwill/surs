@@ -1,21 +1,15 @@
 function getInput() {
-	// All fields are strings
+	// All inputs are strings to avoid using Javascript numbers in calculations
 	var input = {}
-
 	input.ageJoined = $('#age_joined').val();
 	input.ageRetired = $('#age_retired').val();
 	input.ageDeath = $('#age_death').val();
-
-	// Don't get the spinner's "value" here, as it casts to float and we lose
-	// accuracy
 	input.startingSalary = parseDollars($('#start_salary').val());
 	input.employeeContribution = parsePercent($('#employee_contribution').val());
 	input.stateContribution = parsePercent($('#state_contribution').val());
 	input.annualSalaryIncrease = parsePercent($('#annual_salary_increase').val());
-
 	input.sursNetEarnings = parsePercent($('#surs_net_earnings').val());
 	input.annualRetirementIncrease = parsePercent($('#annual_retirement_increase').val());
-
 	return input;
 }
 
@@ -28,6 +22,7 @@ function fadeToggle(jObject, visible, duration, easing, callback) {
 function validate(input) {
 	var problems = [];
 
+	// We can use Javascript numbers for validation
 	var min_age = 10;
 	var min_salary = 2000;
 	var min_age_retired = 10;
@@ -87,7 +82,7 @@ function recalculate() {
 			}
 
 			var tdAge = $('<td>');
-			tdAge.text(year.age);
+			tdAge.text(formatInteger(year.age));
 			tdAge.appendTo(tr);
 
 			var tdSalary = $('<td>');
@@ -188,11 +183,11 @@ function calculate(input) {
 	var oneHundred = bd('100');
 
 	// Convert the inputs strings to integers
-	var ageJoined = parseInt(input.ageJoined);
-	var ageRetired = parseInt(input.ageRetired);
-	var ageDeath = parseInt(input.ageDeath);
+	var ageJoined = bd(input.ageJoined);
+	var ageRetired = bd(input.ageRetired);
+	var ageDeath = bd(input.ageDeath);
 
-	var startingSalary = parseInt(input.startingSalary);
+	var startingSalary = bd(input.startingSalary);
 
 	// Convert the 0-100 percentage integers in the input object to decimal
 	var annualSalaryIncrease = bd(input.annualSalaryIncrease).divide(oneHundred, mc).add(one, mc);
@@ -206,7 +201,7 @@ function calculate(input) {
 	output.years = []
 	for ( var y = 0; y <= ageDeath - ageJoined; y++) {
 		yearData = {};
-		yearData.age = ageJoined + y;
+		yearData.age = ageJoined.add(bd(y));
 
 		if (y === 0) {
 			yearData.salary = bd(startingSalary);
@@ -239,7 +234,14 @@ function calculate(input) {
 }
 
 /**
- * Formats a number or BigDecimal as a dollar string like '$1,000.00'.
+ * Formats a BigDecimal as an integer.
+ */
+function formatInteger(value) {
+	return value.setScale(0, window.RoundingMode.HALF_EVEN()) + '';
+}
+
+/**
+ * Formats a BigDecimal as a dollar string like '$1,000.00'.
  */
 function formatDollars(value, points) {
 	// return value + '';
