@@ -48,8 +48,12 @@ table#results th {
 	vertical-align: bottom;
 }
 
+table#results tr.retirement-year {
+	background-color: #ddddee;
+}
+
 table#results tr.in-retirement {
-	background-color: #efefff;
+	background-color: #f5f5ff;
 }
 
 table#results colgroup#contributions {

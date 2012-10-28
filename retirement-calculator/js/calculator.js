@@ -73,7 +73,9 @@ function recalculate() {
 			var year = output.years[i];
 
 			var tr = $('<tr>');
-			if (year.age >= parseInt(input.ageRetired)) {
+			if (year.age == parseInt(input.ageRetired)) {
+				tr.addClass('retirement-year');
+			} else if (year.age > parseInt(input.ageRetired)) {
 				tr.addClass('in-retirement');
 			}
 
@@ -163,8 +165,8 @@ function tier1Table() {
 }
 
 /**
- * Gets string value of the annuity rate for the specified years of service and
- * retirement age for a Tier 1 employee.
+ * Gets string value of the annuity rate as a percentage (like '79.20') for the
+ * specified years of service and retirement age for a Tier 1 employee.
  */
 function getTier1AnnuityRate(yearsOfService, retirementAge) {
 	if (yearsOfService < 5) {
@@ -227,48 +229,80 @@ function calculate(input) {
 	var sursNetEarnings = bd(input.sursNetEarnings).divide(oneHundred, mc);
 	var annualRetirementIncrease = bd(input.annualRetirementIncrease).divide(oneHundred, mc).add(one, mc);
 
+	var annuityRate = bd(getTier1AnnuityRate(ageRetired - ageJoined, ageRetired)).divide(oneHundred, mc);
+
 	output.finalAverageEarnings = zero;
 	output.finalAverageEarningsYears = 0;
 
 	output.years = []
 	for ( var y = 0; y <= ageDeath - ageJoined; y++) {
-		yearData = {};
-		yearData.age = ageJoined + y;
+		thisYear = {};
+		thisYear.age = ageJoined + y;
 
 		if (y === 0) {
-			yearData.salary = bd(startingSalary);
-			yearData.annuity = zero;
-			yearData.employeeContribution = yearData.salary.multiply(employeeContribution, mc);
-			yearData.stateContribution = yearData.salary.multiply(stateContribution, mc);
-			yearData.sursEarnings = zero;
-			yearData.retirementFundBalance = yearData.employeeContribution.add(yearData.stateContribution, mc);
+			thisYear.salary = bd(startingSalary);
+			thisYear.annuity = zero;
+			thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
+			thisYear.stateContribution = thisYear.salary.multiply(stateContribution, mc);
+			thisYear.sursEarnings = zero;
+			thisYear.retirementFundBalance = thisYear.employeeContribution.add(thisYear.stateContribution, mc);
 
 		} else {
-			lastYearData = output.years[y - 1];
-			if (yearData.age < ageRetired) {
-				yearData.annuity = zero;
-				yearData.salary = lastYearData.salary.multiply(annualSalaryIncrease, mc);
-				yearData.employeeContribution = yearData.salary.multiply(employeeContribution, mc);
-				yearData.stateContribution = yearData.salary.multiply(stateContribution, mc);
-				yearData.sursEarnings = lastYearData.retirementFundBalance.multiply(sursNetEarnings, mc);
-				yearData.retirementFundBalance = lastYearData.retirementFundBalance.add(yearData.employeeContribution,
-						mc).add(yearData.stateContribution, mc).add(yearData.sursEarnings, mc);
+			lastYear = output.years[y - 1];
+			if (thisYear.age < ageRetired) {
+				thisYear.annuity = zero;
+				thisYear.salary = lastYear.salary.multiply(annualSalaryIncrease, mc);
+				thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
+				thisYear.stateContribution = thisYear.salary.multiply(stateContribution, mc);
+				thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
+				thisYear.retirementFundBalance = lastYear.retirementFundBalance.add(thisYear.employeeContribution, mc)
+						.add(thisYear.stateContribution, mc).add(thisYear.sursEarnings, mc);
 			} else {
+				thisYear.salary = zero;
+				thisYear.employeeContribution = zero;
+				thisYear.stateContribution = zero;
 
+				if (thisYear.age === ageRetired) {
+					output.finalAverageEarnings = output.finalAverageEarnings.divide(
+							bd(output.finalAverageEarningsYears + ''), mc);
+
+					thisYear.annuity = output.finalAverageEarnings.multiply(annuityRate, mc);
+					thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
+					thisYear.retirementFundBalance = lastYear.retirementFundBalance.add(thisYear.sursEarnings, mc)
+							.subtract(thisYear.annuity, mc);
+				} else {
+					thisYear.annuity = lastYear.annuity.multiply(annualRetirementIncrease, mc);
+
+					// The result will be 0 if last year's balance is 0
+					thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
+
+					var availableFunds = lastYear.retirementFundBalance.add(thisYear.sursEarnings, mc);
+
+					// If there aren't enough funds to cover this year's annuity
+					// payment, charge employer the difference
+					if (thisYear.annuity.compareTo(availableFunds) > 0) {
+						thisYear.stateContribution = thisYear.annuity.subtract(availableFunds, mc);
+					}
+
+					thisYear.retirementFundBalance = lastYear.retirementFundBalance.add(thisYear.sursEarnings, mc)
+							.subtract(thisYear.annuity, mc);
+
+					if (thisYear.retirementFundBalance.compareTo(zero) < 0) {
+						thisYear.retirementFundBalance = zero;
+					}
+
+				}
 			}
 		}
 
 		// Sum the last four working years' salaries
-		if (yearData.age >= ageRetired - 4 && yearData.age < ageRetired) {
-			output.finalAverageEarnings = output.finalAverageEarnings.add(yearData.salary, mc);
+		if (thisYear.age >= ageRetired - 4 && thisYear.age < ageRetired) {
+			output.finalAverageEarnings = output.finalAverageEarnings.add(thisYear.salary, mc);
 			output.finalAverageEarningsYears++;
 		}
 
-		output.years.push(yearData);
+		output.years.push(thisYear);
 	}
-
-	output.finalAverageEarnings = output.finalAverageEarnings.divide(bd(output.finalAverageEarningsYears + ''), mc)
-			+ '';
 
 	return output;
 }
