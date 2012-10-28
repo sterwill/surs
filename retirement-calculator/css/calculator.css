@@ -13,15 +13,14 @@ div#retirement-calculator-form {
 }
 
 div#advanced {
-	border: 1px solid blue;
 	float: left;
 	clear: both;
+	padding: 14px;
 }
 
 div#problems {
 	float: left;
 	clear: both;
-	display: none;
 }
 
 div#problems p,li {
@@ -34,6 +33,10 @@ div#results {
 	padding: 14px;
 }
 
+button#toggle-advanced {
+	margin: 20px 0 12px 0;
+}
+
 table#results {
 	border-collapse: collapse;
 }
@@ -44,7 +47,7 @@ table#results tbody {
 }
 
 table#results th {
-	padding: 0 6px 0 6px;
+	padding: 0 10px 0 10px;
 	vertical-align: bottom;
 }
 
@@ -53,7 +56,7 @@ table#results tr.retirement-year {
 }
 
 table#results tr.in-retirement {
-	background-color: #f5f5ff;
+	background-color: #f8f8ff;
 }
 
 table#results colgroup#contributions {
@@ -61,7 +64,7 @@ table#results colgroup#contributions {
 }
 
 table#results td {
-	padding: 0 6px 0 6px;
+	padding: 0 10px 0 10px;
 }
 
 div.field {

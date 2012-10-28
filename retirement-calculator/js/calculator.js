@@ -13,6 +13,23 @@ function getInput() {
 	return input;
 }
 
+function toggleAdvancedVisible() {
+	setAdvancedVisible(!$('div#advanced').is(':visible'));
+}
+
+function setAdvancedVisible(visible) {
+	var advanced = $('div#advanced');
+	if (advanced.is(':visible') != visible) {
+		advanced.fadeToggle('short');
+	}
+
+	if (visible) {
+		$('button#toggle-advanced span').text("Hide Advanced Settings");
+	} else {
+		$('button#toggle-advanced span').text("Show Advanced Settings");
+	}
+}
+
 function fadeToggle(jObject, visible, duration, easing, callback) {
 	if (jObject.is(':visible') != visible) {
 		jObject.fadeToggle(duration, easing, callback);

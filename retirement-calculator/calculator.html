@@ -19,6 +19,12 @@
 			recalculate();
 		});
 
+		$('button#toggle-advanced').button();
+		$('button#toggle-advanced').click(function() {
+			toggleAdvancedVisible();
+			return false;
+		});
+
 		$('.age').spinner({
 			min : 1,
 			max : 150,
@@ -45,11 +51,12 @@
 			suffix : '%',
 		});
 
+		setAdvancedVisible(false);
 		recalculate();
 	});
 </script>
 <body>
-	<div id="retirement-calculator-form">
+	<div id="retirement-calculator-form" class="ui-widget ui-widget-content">
 		<div class="field">
 			<label>Age you joined SURS</label> <input type="text" id="age_joined" value="25" size="4" class="age" />
 		</div>
@@ -63,6 +70,10 @@
 		<div class="field">
 			<label>State match</label> <input type="text" id="state_contribution" value="6.2" size="8" class="spinner-percent" />
 			<span class="input-suffix">of salary </span>
+		</div>
+
+		<div class="field">
+			<button id="toggle-advanced"></button>
 		</div>
 
 		<div id="advanced">
@@ -86,14 +97,13 @@
 					size="8" class="spinner-percent" />
 			</div>
 		</div>
-
 		<div id="problems">
 			<p>There are some problems with the values you entered:</p>
 			<ul id="problems"></ul>
 		</div>
 	</div>
 
-	<div id="results">
+	<div id="results" class="ui-widget">
 		<table id="results">
 			<col id="age" />
 			<col id="salary" />
