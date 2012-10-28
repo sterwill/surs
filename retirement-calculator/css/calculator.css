@@ -59,6 +59,10 @@ table#results tr.in-retirement {
 	background-color: #f8f8ff;
 }
 
+table#results .retirement-info {
+	text-align: left;
+}
+
 table#results colgroup#contributions {
 	
 }

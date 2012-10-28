@@ -75,6 +75,79 @@ function validate(input) {
 	return problems.length === 0;
 }
 
+function formatOrdinalHtml(num) {
+	var modOneHundred = num % 100;
+	var modTen = num % 10;
+	var ord;
+
+	if ((modOneHundred - modTen) == 10) {
+		ord = 'th';
+	} else {
+		switch (modTen) {
+		case 1:
+			ord = 'st';
+			break;
+		case 2:
+			ord = 'nd';
+			break;
+		case 3:
+			ord = 'rd';
+			break;
+		default:
+			ord = 'th';
+			break;
+		}
+	}
+	return num + '<sup>' + ord + '<\/sup>';
+}
+
+function makeRetirementYearRow(year, output) {
+	var tr = $('<tr>');
+
+	var tdAge = $('<td class="retirement-info" colspan="7">');
+	tdAge.html('Employee retires on ' + formatOrdinalHtml(year.age) + ' birthday, after ' + output.yearsOfService
+			+ ' years of service, with annuity of ' + formatPercent(output.annuityRate) + ' of average of last '
+			+ output.finalAverageEarningsYears + ' years of salary (' + formatDollars(output.finalAverageEarnings)
+			+ ').');
+	tdAge.appendTo(tr);
+
+	return tr;
+}
+
+function makeYearRow(year) {
+	var tr = $('<tr>');
+
+	var tdAge = $('<td>');
+	tdAge.text(year.age);
+	tdAge.appendTo(tr);
+
+	var tdSalary = $('<td>');
+	tdSalary.text(formatDollars(year.salary));
+	tdSalary.appendTo(tr);
+
+	var tdAnnuity = $('<td>');
+	tdAnnuity.text(formatDollars(year.annuity));
+	tdAnnuity.appendTo(tr);
+
+	var tdEmployeeContribution = $('<td>');
+	tdEmployeeContribution.text(formatDollars(year.employeeContribution));
+	tdEmployeeContribution.appendTo(tr);
+
+	var tdStateContribution = $('<td>');
+	tdStateContribution.text(formatDollars(year.stateContribution));
+	tdStateContribution.appendTo(tr);
+
+	var tdSursEarnings = $('<td>');
+	tdSursEarnings.text(formatDollars(year.sursEarnings));
+	tdSursEarnings.appendTo(tr);
+
+	var tdRetirementFundBalance = $('<td>');
+	tdRetirementFundBalance.text(formatDollars(year.retirementFundBalance));
+	tdRetirementFundBalance.appendTo(tr);
+
+	return tr;
+}
+
 function recalculate() {
 	var input = getInput();
 
@@ -89,41 +162,15 @@ function recalculate() {
 		for ( var i = 0; i < output.years.length; i++) {
 			var year = output.years[i];
 
-			var tr = $('<tr>');
+			var tr = makeYearRow(year);
 			if (year.age == parseInt(input.ageRetired)) {
+				// Insert an additional information row
+				makeRetirementYearRow(year, output).appendTo(tbody);
+
 				tr.addClass('retirement-year');
 			} else if (year.age > parseInt(input.ageRetired)) {
 				tr.addClass('in-retirement');
 			}
-
-			var tdAge = $('<td>');
-			tdAge.text(year.age);
-			tdAge.appendTo(tr);
-
-			var tdSalary = $('<td>');
-			tdSalary.text(formatDollars(year.salary));
-			tdSalary.appendTo(tr);
-
-			var tdAnnuity = $('<td>');
-			tdAnnuity.text(formatDollars(year.annuity));
-			tdAnnuity.appendTo(tr);
-
-			var tdEmployeeContribution = $('<td>');
-			tdEmployeeContribution.text(formatDollars(year.employeeContribution));
-			tdEmployeeContribution.appendTo(tr);
-
-			var tdStateContribution = $('<td>');
-			tdStateContribution.text(formatDollars(year.stateContribution));
-			tdStateContribution.appendTo(tr);
-
-			var tdSursEarnings = $('<td>');
-			tdSursEarnings.text(formatDollars(year.sursEarnings));
-			tdSursEarnings.appendTo(tr);
-
-			var tdRetirementFundBalance = $('<td>');
-			tdRetirementFundBalance.text(formatDollars(year.retirementFundBalance));
-			tdRetirementFundBalance.appendTo(tr);
-
 			tr.appendTo(tbody);
 		}
 
@@ -246,7 +293,9 @@ function calculate(input) {
 	var sursNetEarnings = bd(input.sursNetEarnings).divide(oneHundred, mc);
 	var annualRetirementIncrease = bd(input.annualRetirementIncrease).divide(oneHundred, mc).add(one, mc);
 
-	var annuityRate = bd(getTier1AnnuityRate(ageRetired - ageJoined, ageRetired)).divide(oneHundred, mc);
+	output.yearsOfService = ageRetired - ageJoined;
+
+	output.annuityRate = bd(getTier1AnnuityRate(output.yearsOfService, ageRetired)).divide(oneHundred, mc);
 
 	output.finalAverageEarnings = zero;
 	output.finalAverageEarningsYears = 0;
@@ -283,7 +332,7 @@ function calculate(input) {
 					output.finalAverageEarnings = output.finalAverageEarnings.divide(
 							bd(output.finalAverageEarningsYears + ''), mc);
 
-					thisYear.annuity = output.finalAverageEarnings.multiply(annuityRate, mc);
+					thisYear.annuity = output.finalAverageEarnings.multiply(output.annuityRate, mc);
 					thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
 					thisYear.retirementFundBalance = lastYear.retirementFundBalance.add(thisYear.sursEarnings, mc)
 							.subtract(thisYear.annuity, mc);
@@ -329,6 +378,13 @@ function calculate(input) {
  */
 function formatInteger(value) {
 	return value.setScale(0, window.RoundingMode.HALF_EVEN()) + '';
+}
+
+/**
+ * Formats a BigDecimal as a percentage.
+ */
+function formatPercent(value) {
+	return value.multiply(bd('100')).setScale(2, window.RoundingMode.HALF_EVEN()) + '%';
 }
 
 /**
