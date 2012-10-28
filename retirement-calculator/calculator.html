@@ -23,6 +23,7 @@
 			min : 1,
 			max : 150,
 			step : 1,
+			places : 0,
 			showOn : 'never',
 		});
 
@@ -31,6 +32,7 @@
 			max : 1000000,
 			step : 1000,
 			start : 28000,
+			places : 0,
 			prefix : '$',
 			group : ',',
 		});
@@ -49,39 +51,39 @@
 <body>
 	<div id="retirement-calculator-form">
 		<div class="field">
-			<label>Age you joined SURS</label> <input type="number" id="age_joined" value="28" size="4" class="age" />
+			<label>Age you joined SURS</label> <input type="text" id="age_joined" value="25" size="4" class="age" />
 		</div>
 		<div class="field">
-			<label>Starting salary</label> <input type="number" id="start_salary" value="28000" size="12" class="salary" /> <span
+			<label>Starting salary</label> <input type="text" id="start_salary" value="28000" size="12" class="salary" /> <span
 				class="input-suffix">per year</span>
 		</div>
 		<div class="field">
-			<label>Age at retirement</label> <input type="number" id="age_retired" value="61" size="4" class="age" />
+			<label>Age at retirement</label> <input type="text" id="age_retired" value="61" size="4" class="age" />
 		</div>
 		<div class="field">
-			<label>State match</label> <input type="number" id="stateContribution" value="6.2" size="8" class="spinner-percent" />
+			<label>State match</label> <input type="text" id="state_contribution" value="6.2" size="8" class="spinner-percent" />
 			<span class="input-suffix">of salary </span>
 		</div>
 
 		<div id="advanced">
 			<div class="field">
-				<label>Annual salary increase</label> <input type="number" id="annual_salary_increase" value="3" size="8"
+				<label>Annual salary increase</label> <input type="text" id="annual_salary_increase" value="3" size="8"
 					class="spinner-percent" />
 			</div>
 			<div class="field">
-				<label>Age at death</label> <input type="number" id="age_death" value="86" size="4" class="age" />
+				<label>Age at death</label> <input type="text" id="age_death" value="86" size="4" class="age" />
 			</div>
 			<div class="field">
-				<label>Your contribution to retirement</label> <input type="number" id="employee_contribution" value="8" size="8"
+				<label>Your contribution to retirement</label> <input type="text" id="employee_contribution" value="8" size="8"
 					class="spinner-percent" /> <span class="input-suffix">per paycheck</span>
 			</div>
 			<div class="field">
-				<label>SURS net earnings</label> <input type="number" id="surs_net_earnings" value="7.5" size="8"
+				<label>SURS net earnings</label> <input type="text" id="surs_net_earnings" value="7.5" size="8"
 					class="spinner-percent" />
 			</div>
 			<div class="field">
-				<label>Annual increase in retirement from SURS</label> <input type="number" id="annual_retirement_increase"
-					value="3" size="8" class="spinner-percent" />
+				<label>Annual increase in retirement from SURS</label> <input type="text" id="annual_retirement_increase" value="3"
+					size="8" class="spinner-percent" />
 			</div>
 		</div>
 

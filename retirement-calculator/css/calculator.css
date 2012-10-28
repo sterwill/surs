@@ -49,7 +49,7 @@ table#results th {
 }
 
 table#results tr.in-retirement {
-	background-color: lightblue;
+	background-color: #efefff;
 }
 
 table#results colgroup#contributions {

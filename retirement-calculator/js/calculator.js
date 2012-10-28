@@ -1,18 +1,20 @@
 function getInput() {
+	// All fields are strings
 	var input = {}
 
-	input.ageJoined = parseInt($('#age_joined').val());
-	input.ageRetired = parseInt($('#age_retired').val());
-	input.ageDeath = parseInt($('#age_death').val());
+	input.ageJoined = $('#age_joined').val();
+	input.ageRetired = $('#age_retired').val();
+	input.ageDeath = $('#age_death').val();
 
-	input.startingSalary = parseInt($('#start_salary').spinner("value"));
-	input.employeeContribution = parseInt($('#employee_contribution').spinner("value"));
-	input.stateContribution = parseInt($('#stateContribution').spinner("value"));
+	// Don't get the spinner's "value" here, as it casts to float and we lose
+	// accuracy
+	input.startingSalary = parseDollars($('#start_salary').val());
+	input.employeeContribution = parsePercent($('#employee_contribution').val());
+	input.stateContribution = parsePercent($('#state_contribution').val());
+	input.annualSalaryIncrease = parsePercent($('#annual_salary_increase').val());
 
-	input.annualSalaryIncrease = parseInt($('#annual_salary_increase').spinner("value"));
-
-	input.sursNetEarnings = parseInt($('#surs_net_earnings').spinner("value"));
-	input.annualRetirementIncrease = parseInt($('#annual_retirement_increase').spinner("value"));
+	input.sursNetEarnings = parsePercent($('#surs_net_earnings').val());
+	input.annualRetirementIncrease = parsePercent($('#annual_retirement_increase').val());
 
 	return input;
 }
@@ -31,25 +33,22 @@ function validate(input) {
 	var min_age_retired = 10;
 	var min_age_death = 10;
 
-	if (input.ageJoined < min_age) {
+	if (parseInt(input.ageJoined) < min_age) {
 		problems.push("The age you joined SURS must be at least " + min_age);
 	}
-	if (input.startingSalary < min_salary) {
+	if (parseInt(input.startingSalary) < min_salary) {
 		problems.push("Your starting salary must be at least " + min_salary);
 	}
-	if (input.ageRetired < min_age_retired) {
+	if (parseInt(input.ageRetired) < min_age_retired) {
 		problems.push("Your retirement age must be at least " + min_age_retired);
 	}
-	if (input.ageRetired <= input.ageJoined) {
+	if (parseInt(input.ageRetired) <= input.ageJoined) {
 		problems.push("Your age at retirement must be greater than the age you joined SURS");
 	}
-	if (input.stateMatch < 0 || input.stateMatch > 100) {
-		problems.push("The state match percentage must be between 0% and 100%");
-	}
-	if (input.ageDeath < min_age_death) {
+	if (parseInt(input.ageDeath) < min_age_death) {
 		problems.push("Your age at death must be at least " + min_age_death);
 	}
-	if (input.ageDeath <= input.ageRetired) {
+	if (parseInt(input.ageDeath) <= input.ageRetired) {
 		problems.push("Your age at death must be greater than your retirement age");
 	}
 
@@ -65,7 +64,7 @@ function validate(input) {
 		fadeToggle($('div#problems'), false, 'fast');
 	}
 
-	return problems.length == 0;
+	return problems.length === 0;
 }
 
 function recalculate() {
@@ -170,25 +169,16 @@ function tier1Table() {
 }
 
 function mathContext() {
-	return window.MathContext.DECIMAL64();
+	// DECIMAL64 specifies HALF_EVEN rounding
+	return new window.MathContext.DECIMAL64();
 }
 
 function bd(value) {
-	return new window.BigDecimal(value + '', mathContext());
+	return new window.BigDecimal(value + '', mathContext()).setScale(8, window.RoundingMode.HALF_EVEN());
 }
 
 function calculate(input) {
 	var output = {};
-
-	input.ageJoined
-	input.startingSalary
-	input.ageRetired
-	input.stateMatch
-	input.annualSalaryIncrease
-	input.ageDeath
-	input.employeeContribution
-	input.sursNetEarnings
-	input.annualRetirementIncrease
 
 	// Use this context in all operations
 	var mc = mathContext();
@@ -197,39 +187,63 @@ function calculate(input) {
 	var one = bd('1');
 	var oneHundred = bd('100');
 
+	// Convert the inputs strings to integers
+	var ageJoined = parseInt(input.ageJoined);
+	var ageRetired = parseInt(input.ageRetired);
+	var ageDeath = parseInt(input.ageDeath);
+
+	var startingSalary = parseInt(input.startingSalary);
+
 	// Convert the 0-100 percentage integers in the input object to decimal
-	var annualSalaryIncrease = bd(input.annualSalaryIncrease).divide(oneHundred, mc).add(one);
+	var annualSalaryIncrease = bd(input.annualSalaryIncrease).divide(oneHundred, mc).add(one, mc);
 	var employeeContribution = bd(input.employeeContribution).divide(oneHundred, mc);
-	var stateContribution = bd(input.stateContribution).divide(oneHundred);
-	var sursNetEarnings = bd(input.sursNetEarnings).divide(oneHundred, mc).add(one);
-	var annualRetirementIncrease = bd(input.annualRetirementIncrease).divide(oneHundred, mc).add(one);
+	var stateContribution = bd(input.stateContribution).divide(oneHundred, mc);
+	var sursNetEarnings = bd(input.sursNetEarnings).divide(oneHundred, mc);
+	var annualRetirementIncrease = bd(input.annualRetirementIncrease).divide(oneHundred, mc).add(one, mc);
+
+	var finalFourYearSalaryTotal = zero;
 
 	output.years = []
-	for ( var y = 0; y <= input.ageDeath - input.ageJoined; y++) {
+	for ( var y = 0; y <= ageDeath - ageJoined; y++) {
 		yearData = {};
-		yearData.age = input.ageJoined + y;
+		yearData.age = ageJoined + y;
 
-		if (y == 0) {
-			yearData.salary = bd(input.startingSalary);
+		if (y === 0) {
+			yearData.salary = bd(startingSalary);
 			yearData.annuity = zero;
 			yearData.employeeContribution = yearData.salary.multiply(employeeContribution, mc);
 			yearData.stateContribution = yearData.salary.multiply(stateContribution, mc);
 			yearData.sursEarnings = zero;
-			yearData.retirementFundBalance = yearData.employeeContribution + yearData.stateContribution;
+			yearData.retirementFundBalance = yearData.employeeContribution.add(yearData.stateContribution, mc);
+
 		} else {
 			lastYearData = output.years[y - 1];
-
+			yearData.annuity = zero;
 			yearData.salary = lastYearData.salary.multiply(annualSalaryIncrease, mc);
+			yearData.employeeContribution = yearData.salary.multiply(employeeContribution, mc);
+			yearData.stateContribution = yearData.salary.multiply(stateContribution, mc);
+			yearData.sursEarnings = lastYearData.retirementFundBalance.multiply(sursNetEarnings, mc);
+			yearData.retirementFundBalance = lastYearData.retirementFundBalance.add(yearData.employeeContribution, mc)
+					.add(yearData.stateContribution, mc).add(yearData.sursEarnings, mc);
 		}
+
+		// Sum the last four working years' salaries
+		if (yearData.age >= ageRetired - 4) {
+			finalFourYearSalaryTotal = finalFourYearSalaryTotal.add(yearData.salary, mc);
+		}
+
 		output.years.push(yearData);
 	}
 
 	return output;
 }
 
+/**
+ * Formats a number or BigDecimal as a dollar string like '$1,000.00'.
+ */
 function formatDollars(value, points) {
-	return value + '';
-	if (points == null) {
+	// return value + '';
+	if (points === null) {
 		points = 0;
 	}
 
@@ -241,4 +255,20 @@ function formatDollars(value, points) {
 	}
 
 	return (value < 0 ? '-' : '') + '$' + result;
+}
+
+/**
+ * Parses a string like '$1,000.00" into a string like '1000.00' for BigDecimal
+ * to consume.
+ */
+function parseDollars(value) {
+	return value.replace('$', '').replace(',', '');
+}
+
+/**
+ * Parses a string like '5.25%' into a string like '5.25' for BigDecimal to
+ * consume.
+ */
+function parsePercent(value) {
+	return value.replace("%", '');
 }
