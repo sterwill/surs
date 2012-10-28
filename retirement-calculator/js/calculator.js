@@ -192,7 +192,7 @@ function tier1Table() {
 	// (http://surs.org/pdfs/mem_guide/Guide-TRD.pdf),
 	// "2.2% General Formula Table (Tier I)"
 
-	// Strings are used instead of Javascript numbers for accurate math with
+	// Strings are used instead of Javascript numbers for convenient use with
 	// BigDecimal
 
 	// Key is years of service, columns are for age groups:
@@ -270,7 +270,7 @@ function getTier1AnnuityRate(yearsOfService, retirementAge) {
 }
 
 function roundingMode() {
-	return MathContext.prototype.ROUND_HALF_UP;
+	return MathContext.prototype.ROUND_HALF_EVEN;
 }
 
 function mathContext() {
