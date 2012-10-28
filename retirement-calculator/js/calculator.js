@@ -269,13 +269,16 @@ function getTier1AnnuityRate(yearsOfService, retirementAge) {
 
 }
 
+function roundingMode() {
+	return MathContext.prototype.ROUND_HALF_UP;
+}
+
 function mathContext() {
-	// DECIMAL64 specifies HALF_EVEN rounding
-	return new window.MathContext.DECIMAL64();
+	return new MathContext(16, MathContext.prototype.PLAIN, false, roundingMode());
 }
 
 function bd(value) {
-	return new window.BigDecimal(value + '', mathContext()).setScale(8, window.RoundingMode.HALF_EVEN());
+	return new BigDecimal(value);
 }
 
 function calculate(input) {
@@ -315,7 +318,7 @@ function calculate(input) {
 		thisYear.age = ageJoined + y;
 
 		if (y === 0) {
-			thisYear.salary = bd(startingSalary);
+			thisYear.salary = startingSalary;
 			thisYear.annuity = zero;
 			thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
 			thisYear.stateContribution = thisYear.salary.multiply(stateContribution, mc);
@@ -377,14 +380,14 @@ function calculate(input) {
  * Formats a BigDecimal as an integer.
  */
 function formatInteger(value) {
-	return value.setScale(0, window.RoundingMode.HALF_EVEN()) + '';
+	return value.setScale(0, roundingMode()) + '';
 }
 
 /**
  * Formats a BigDecimal as a percentage.
  */
 function formatPercent(value) {
-	return value.multiply(bd('100')).setScale(2, window.RoundingMode.HALF_EVEN()) + '%';
+	return value.multiply(bd('100')).setScale(2, roundingMode()) + '%';
 }
 
 /**
