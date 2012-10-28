@@ -16,13 +16,23 @@
 	$(function() {
 		$('input').addClass('ui-widget ui-state-default ui-corner-all');
 		$('input').change(function() {
-			recalculate();
+			/*
+			if ($('input#live').is(":checked")) {
+				  recalculate();
+			}
+			 */
 		});
 
 		$('button#toggle-advanced').button();
 		$('button#toggle-advanced').click(function() {
 			toggleAdvancedVisible();
 			return false;
+		});
+
+		$('button#recalculate').button();
+		$('button#recalculate').click(function() {
+			recalculate();
+
 		});
 
 		// http://www.dhs.state.il.us/page.aspx?item=17356
@@ -70,8 +80,8 @@
 				<label>Employee gender</label>
 			</div>
 			<div class="right">
-				<input type="radio" id="male" name="radio" checked="checked" /> <label for="male">Male</label>
-				<input type="radio" id="female" name="radio" /><label for="female">Female</label>
+				<input type="radio" id="male" name="radio" checked="checked" /> <label for="male">Male</label> <input type="radio"
+					id="female" name="radio" /><label for="female">Female</label>
 			</div>
 		</div>
 		<div class="field">
@@ -109,57 +119,65 @@
 			</div>
 		</div>
 
-		<div class="field">
-			<button id="toggle-advanced"></button>
+		<hr class="advanced field" />
+
+		<div class="advanced field">
+			<div class="left">
+				<label>Employee annual salary increase</label>
+			</div>
+			<div class="right">
+				<input type="text" id="annual_salary_increase" value="3" size="8" class="spinner-percent" />
+			</div>
+		</div>
+		<div class="advanced field">
+			<div class="left">
+				<label>Employee age at death</label>
+			</div>
+			<div class="right">
+				<input type="text" id="age_death" value="75" size="4" class="age" />
+			</div>
+		</div>
+		<div class="advanced field">
+			<div class="left">
+				<label>Employee contribution to retirement</label>
+			</div>
+			<div class="right">
+				<input type="text" id="employee_contribution" value="8" size="8" class="spinner-percent" /> <span
+					class="input-suffix">per paycheck</span>
+			</div>
+		</div>
+		<div class="advanced field">
+			<div class="left">
+				<label>SURS net earnings</label>
+			</div>
+			<div class="right">
+				<input type="text" id="surs_net_earnings" value="7.5" size="8" class="spinner-percent" />
+			</div>
+		</div>
+		<div class="advanced field">
+			<div class="left">
+				<label>Annual increase in retirement from SURS</label>
+			</div>
+			<div class="right">
+				<input type="text" id="annual_retirement_increase" value="3" size="8" class="spinner-percent" />
+			</div>
 		</div>
 
-		<div id="advanced">
-			<div class="field">
-				<div class="left">
-					<label>Employee annual salary increase</label>
-				</div>
-				<div class="right">
-					<input type="text" id="annual_salary_increase" value="3" size="8" class="spinner-percent" />
-				</div>
-			</div>
-			<div class="field">
-				<div class="left">
-					<label>Employee age at death</label>
-				</div>
-				<div class="right">
-					<input type="text" id="age_death" value="75" size="4" class="age" />
-				</div>
-			</div>
-			<div class="field">
-				<div class="left">
-					<label>Employee contribution to retirement</label>
-				</div>
-				<div class="right">
-					<input type="text" id="employee_contribution" value="8" size="8" class="spinner-percent" /> <span
-						class="input-suffix">per paycheck</span>
-				</div>
-			</div>
-			<div class="field">
-				<div class="left">
-					<label>SURS net earnings</label>
-				</div>
-				<div class="right">
-					<input type="text" id="surs_net_earnings" value="7.5" size="8" class="spinner-percent" />
-				</div>
-			</div>
-			<div class="field">
-				<div class="left">
-					<label>Annual increase in retirement from SURS</label>
-				</div>
-				<div class="right">
-					<input type="text" id="annual_retirement_increase" value="3" size="8" class="spinner-percent" />
-				</div>
+		<div class="buttons">
+			<div class="left">
+				<button id="toggle-advanced"></button>
+				<button id="recalculate">Recalculate</button>
+				<!-- 
+				<input id="live" type="checkbox" checked="checked" class="ui-widget" /><label for="live" class="ui-widget">Recalculate as I make changes</label>
+				 -->
 			</div>
 		</div>
+
 		<div id="problems">
 			<p>There are some problems with the values you entered:</p>
 			<ul id="problems"></ul>
 		</div>
+
 	</div>
 
 	<div id="results" class="ui-widget">

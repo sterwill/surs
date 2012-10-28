@@ -51,10 +51,6 @@ table#results th {
 	vertical-align: bottom;
 }
 
-table#results tr.retirement-year {
-	background-color: #ddddee;
-}
-
 table#results tr.in-retirement {
 	background-color: #f8f8ff;
 }
@@ -63,8 +59,8 @@ table#results .retirement-info {
 	text-align: left;
 	/* A small size so it doesn't stretch the table. */
 	width: 200px;
-	color: #992222;
-	padding: 0 0 8px 0;
+	color: #111199;
+	padding: 2px 0 12px 0;
 }
 
 table#results colgroup#contributions {
@@ -73,6 +69,25 @@ table#results colgroup#contributions {
 
 table#results td {
 	padding: 0 10px 0 10px;
+}
+
+table#results td.underfunded {
+	color: #ff0000;
+}
+
+div.buttons {
+	float: left;
+	clear: both;
+	text-align: right;
+}
+
+hr.field {
+	float: left;
+	clear: both;
+	width: 100%;
+	border: 0px none;
+	height: 1px;
+	background-color: #aaaaaa;
 }
 
 div.field {
@@ -102,4 +117,5 @@ div.field span.input-suffix {
 }
 
 div.field .ui-spinner {
+	
 }

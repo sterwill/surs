@@ -14,11 +14,11 @@ function getInput() {
 }
 
 function toggleAdvancedVisible() {
-	setAdvancedVisible(!$('div#advanced').is(':visible'));
+	setAdvancedVisible(!$('.advanced').is(':visible'));
 }
 
 function setAdvancedVisible(visible) {
-	var advanced = $('div#advanced');
+	var advanced = $('.advanced');
 	if (advanced.is(':visible') != visible) {
 		advanced.fadeToggle('short');
 	}
@@ -41,23 +41,23 @@ function validate(input) {
 
 	// We can use Javascript numbers for validation
 	var min_age = 10;
-	var min_salary = 2000;
+	var min_salary = 1000;
 	var min_age_retired = 55;
 
 	if (parseInt(input.ageJoined) < min_age) {
-		problems.push("The age you joined SURS must be at least " + min_age);
+		problems.push("The age the employee joined SURS must be at least " + min_age);
 	}
 	if (parseInt(input.startingSalary) < min_salary) {
-		problems.push("Your starting salary must be at least " + min_salary);
+		problems.push("Employee's starting salary must be at least " + min_salary);
 	}
 	if (parseInt(input.ageRetired) < min_age_retired) {
-		problems.push("Your retirement age must be at least " + min_age_retired);
+		problems.push("Employee's retirement age must be at least " + min_age_retired);
 	}
 	if (parseInt(input.ageRetired) <= input.ageJoined) {
-		problems.push("Your age at retirement must be greater than the age you joined SURS");
+		problems.push("Employee's age at retirement must be greater than the age employee joined SURS");
 	}
 	if (parseInt(input.ageDeath) <= input.ageRetired) {
-		problems.push("Your age at death must be greater than your retirement age");
+		problems.push("Employee's age at death must be greater than employee's retirement age");
 	}
 
 	if (problems.length > 0) {
@@ -105,7 +105,7 @@ function formatOrdinalHtml(num) {
 	return num + '<sup>' + ord + '<\/sup>';
 }
 
-function makeRetirementYearRow(year, output) {
+function makeRetirementYearInfoRow(year, output) {
 	var tr = $('<tr>');
 
 	var tdAge = $('<td class="retirement-info" colspan="7">');
@@ -118,8 +118,13 @@ function makeRetirementYearRow(year, output) {
 	return tr;
 }
 
-function makeYearRow(year) {
+function makeYearRow(input, year) {
 	var tr = $('<tr>');
+
+	var inRetirement = year.age >= parseInt(input.ageRetired);
+	if (inRetirement) {
+		tr.addClass('in-retirement');
+	}
 
 	var tdAge = $('<td>');
 	tdAge.text(year.age);
@@ -139,6 +144,9 @@ function makeYearRow(year) {
 
 	var tdStateContribution = $('<td>');
 	tdStateContribution.text(formatDollars(year.stateContribution));
+	if (inRetirement && year.stateContribution.compareTo(bd('0')) > 0) {
+		tdStateContribution.addClass('underfunded');
+	}
 	tdStateContribution.appendTo(tr);
 
 	var tdSursEarnings = $('<td>');
@@ -166,16 +174,12 @@ function recalculate() {
 		for ( var i = 0; i < output.years.length; i++) {
 			var year = output.years[i];
 
-			var tr = makeYearRow(year);
 			if (year.age == parseInt(input.ageRetired)) {
 				// Insert an additional information row
-				makeRetirementYearRow(year, output).appendTo(tbody);
-
-				tr.addClass('retirement-year');
-			} else if (year.age > parseInt(input.ageRetired)) {
-				tr.addClass('in-retirement');
+				makeRetirementYearInfoRow(year, output).appendTo(tbody);
 			}
-			tr.appendTo(tbody);
+
+			makeYearRow(input, year).appendTo(tbody);
 		}
 
 	} else {
