@@ -61,6 +61,10 @@ table#results tr.in-retirement {
 
 table#results .retirement-info {
 	text-align: left;
+	/* A small size so it doesn't stretch the table. */
+	width: 200px;
+	color: #992222;
+	padding: 0 0 8px 0;
 }
 
 table#results colgroup#contributions {
@@ -74,29 +78,28 @@ table#results td {
 div.field {
 	float: left;
 	clear: both;
-	margin: 3px 0 3px 0;
+	margin: 5px 0 5px 0;
 	line-height: 1em;
 }
 
-div.field label {
+div.field .left {
 	float: left;
-	width: 300px;
+	width: 400px;
 	text-align: right;
 	margin-right: 12px;
 	margin-top: 4px;
 }
 
-div.field input {
+div.field .right {
 	float: left;
 	margin-right: 10px;
+	text-align: left;
 }
 
 div.field span.input-suffix {
-	float: left;
 	color: #555555;
 	margin-top: 4px;
 }
 
 div.field .ui-spinner {
-	float: left;
 }

@@ -75,6 +75,10 @@ function validate(input) {
 	return problems.length === 0;
 }
 
+/**
+ * Function adapted from http://www.reignwaterdesigns.com/ad/tidbits/ordinal/.
+ * Copyright Addam Driver 2008.
+ */
 function formatOrdinalHtml(num) {
 	var modOneHundred = num % 100;
 	var modTen = num % 10;

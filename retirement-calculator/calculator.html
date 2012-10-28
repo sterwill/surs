@@ -25,6 +25,14 @@
 			return false;
 		});
 
+		// http://www.dhs.state.il.us/page.aspx?item=17356
+		$('input#male').click(function() {
+			$('#age_death').spinner('value', '75');
+		});
+		$('input#female').click(function() {
+			$('#age_death').spinner('value', '80');
+		});
+
 		$('.age').spinner({
 			min : 1,
 			max : 150,
@@ -58,18 +66,47 @@
 <body>
 	<div id="retirement-calculator-form" class="ui-widget ui-widget-content">
 		<div class="field">
-			<label>Age you joined SURS</label> <input type="text" id="age_joined" value="25" size="4" class="age" />
+			<div class="left">
+				<label>Employee gender</label>
+			</div>
+			<div class="right">
+				<input type="radio" id="male" name="radio" checked="checked" /> <label for="male">Male</label>
+				<input type="radio" id="female" name="radio" /><label for="female">Female</label>
+			</div>
 		</div>
 		<div class="field">
-			<label>Starting salary</label> <input type="text" id="start_salary" value="28000" size="12" class="salary" /> <span
-				class="input-suffix">per year</span>
+			<div class="left">
+				<label>Age employee joined SURS</label>
+			</div>
+			<div class="right">
+				<input type="text" id="age_joined" value="25" size="4" class="age" />
+			</div>
 		</div>
 		<div class="field">
-			<label>Age at retirement</label> <input type="text" id="age_retired" value="61" size="4" class="age" />
+			<div class="left">
+				<label>Starting salary</label>
+			</div>
+			<div class="right">
+				<input type="text" id="start_salary" value="28000" size="12" class="salary" /> <span class="input-suffix">per
+					year</span>
+			</div>
 		</div>
 		<div class="field">
-			<label>State match</label> <input type="text" id="state_contribution" value="6.2" size="8" class="spinner-percent" />
-			<span class="input-suffix">of salary </span>
+			<div class="left">
+				<label>Age employee retires</label>
+			</div>
+			<div class="right">
+				<input type="text" id="age_retired" value="61" size="4" class="age" />
+			</div>
+		</div>
+		<div class="field">
+			<div class="left">
+				<label>State match</label>
+			</div>
+			<div class="right">
+				<input type="text" id="state_contribution" value="6.2" size="8" class="spinner-percent" /> <span
+					class="input-suffix">of salary </span>
+			</div>
 		</div>
 
 		<div class="field">
@@ -78,23 +115,45 @@
 
 		<div id="advanced">
 			<div class="field">
-				<label>Annual salary increase</label> <input type="text" id="annual_salary_increase" value="3" size="8"
-					class="spinner-percent" />
+				<div class="left">
+					<label>Employee annual salary increase</label>
+				</div>
+				<div class="right">
+					<input type="text" id="annual_salary_increase" value="3" size="8" class="spinner-percent" />
+				</div>
 			</div>
 			<div class="field">
-				<label>Age at death</label> <input type="text" id="age_death" value="86" size="4" class="age" />
+				<div class="left">
+					<label>Employee age at death</label>
+				</div>
+				<div class="right">
+					<input type="text" id="age_death" value="75" size="4" class="age" />
+				</div>
 			</div>
 			<div class="field">
-				<label>Your contribution to retirement</label> <input type="text" id="employee_contribution" value="8" size="8"
-					class="spinner-percent" /> <span class="input-suffix">per paycheck</span>
+				<div class="left">
+					<label>Employee contribution to retirement</label>
+				</div>
+				<div class="right">
+					<input type="text" id="employee_contribution" value="8" size="8" class="spinner-percent" /> <span
+						class="input-suffix">per paycheck</span>
+				</div>
 			</div>
 			<div class="field">
-				<label>SURS net earnings</label> <input type="text" id="surs_net_earnings" value="7.5" size="8"
-					class="spinner-percent" />
+				<div class="left">
+					<label>SURS net earnings</label>
+				</div>
+				<div class="right">
+					<input type="text" id="surs_net_earnings" value="7.5" size="8" class="spinner-percent" />
+				</div>
 			</div>
 			<div class="field">
-				<label>Annual increase in retirement from SURS</label> <input type="text" id="annual_retirement_increase" value="3"
-					size="8" class="spinner-percent" />
+				<div class="left">
+					<label>Annual increase in retirement from SURS</label>
+				</div>
+				<div class="right">
+					<input type="text" id="annual_retirement_increase" value="3" size="8" class="spinner-percent" />
+				</div>
 			</div>
 		</div>
 		<div id="problems">
