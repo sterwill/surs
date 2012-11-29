@@ -1,119 +1,72 @@
-body {
-	
-}
-
 input {
 	text-align: right;
+}
+
+div#questions {
+	
 }
 
 div#retirement-calculator-form {
 	float: left;
 	clear: both;
 	padding: 14px;
-}
-
-div#advanced {
-	float: left;
-	clear: both;
-	padding: 14px;
+	margin-bottom: 60px;
 }
 
 div#problems {
 	float: left;
 	clear: both;
+	display: none;
 }
 
-div#problems p,li {
+div#problems p,div#problems li {
 	color: #880000;
 }
 
-div#results {
-	float: left;
-	clear: both;
-	padding: 14px;
-}
-
-button#toggle-advanced {
-	margin: 20px 0 12px 0;
-}
-
-table#results {
-	border-collapse: collapse;
-}
-
-table#results tbody {
-	border-top: 2px solid #777777;
-	text-align: right;
-}
-
-table#results th {
-	padding: 0 10px 0 10px;
-	vertical-align: bottom;
-}
-
-table#results tr.in-retirement {
-	background-color: #f8f8ff;
-}
-
-table#results .retirement-info {
-	text-align: left;
-	/* A small size so it doesn't stretch the table. */
-	width: 200px;
-	color: #111199;
-	padding: 2px 0 12px 0;
-}
-
-table#results colgroup#contributions {
-	
-}
-
-table#results td {
-	padding: 0 10px 0 10px;
-}
-
-table#results td.underfunded {
-	color: #ff0000;
-}
-
-div.buttons {
-	float: left;
-	clear: both;
-	text-align: right;
-}
-
 hr.field {
-	float: left;
+	float: right;
 	clear: both;
 	width: 100%;
 	border: 0px none;
 	height: 1px;
-	background-color: #aaaaaa;
+	background-color: #bbbbbb;
 }
 
 div.field {
+	width: 100%;
 	float: left;
 	clear: both;
 	margin: 5px 0 5px 0;
 	line-height: 1em;
+	float: left;
+	clear: both;
 }
 
 div.field .left {
-	float: left;
-	width: 400px;
-	text-align: right;
-	margin-right: 12px;
 	margin-top: 4px;
+	margin-right: 13em;
 }
 
 div.field .right {
-	float: left;
-	margin-right: 10px;
+	float: right;
+	width: 12em;
 	text-align: left;
+	margin-right: 10px;
+	margin-top: 2px;
+}
+
+div.field .left label {
+	font-weight: bold;
+}
+
+div.field .left p {
+	font-size: 80%;
 }
 
 div.field span.input-suffix {
 	color: #555555;
 	margin-top: 4px;
+	font-size: 80%;
 }
 
 div.field .ui-spinner {

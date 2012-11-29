@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Illinois Pension Reform – Some Sample Numbers</title>
+<link rel="stylesheet" type="text/css"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/ui-lightness/jquery-ui.css" />
+<link rel="stylesheet" href="external/btburnettSpinner/ui.spinner.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/calculator.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<script src="external/btburnettSpinner/ui.spinner.min.js"></script>
+<script src="external/BigDecimal.js/BigDecimal-all-last.js"></script>
+<script src="js/base.js"></script>
+<script src="js/questions.js"></script>
+<script>
+	$(function() {
+		$('input').addClass('ui-widget ui-state-default ui-corner-all');
+
+		$('button#calculate').button();
+		$('button#calculate').click(function() {
+			var input = getInput();
+			if (validate(input)) {
+				window.location.href = 'results.html?' + makeQueryString(input);
+			}
+		});
+
+		$('.age').spinner({
+			min : 1,
+			max : 150,
+			step : 1,
+			places : 0,
+		});
+
+		$('.salary').spinner({
+			min : 0,
+			max : 106800,
+			step : 1000,
+			start : 28000,
+			places : 0,
+			prefix : '$',
+			group : ',',
+		});
+
+		$('.spinner-percent').spinner({
+			min : 0,
+			max : 100,
+			step : 0.1,
+			places : 1,
+			suffix : '%',
+		});
+
+		validate(getInput())
+	});
+</script>
+<body>
+	<h2>Illinois Pension Reform – Some Sample Numbers</h2>
+
+	<div id="questions">
+		<p>Defined benefit retirement plans depend on both the employee and employer making regular payments into a fund
+			that is then invested to increase the money available in retirement. Below is your opportunity to enter your
+			variables into a sample retirement plan to see first-hand how the plan will function. Fill in the variables, compute
+			the results and see how your plan works.</p>
+		<div id="retirement-calculator-form" class="ui-widget ui-widget-content">
+			<div class="field">
+				<div class="right">
+					<input type="text" id="age_joined" value="25" size="4" class="age" />
+				</div>
+				<div class="left">
+					<label>At what age is your employee first employed?</label>
+					<p>During last year, the median age of first hires was, XX for men and XX for women.</p>
+				</div>
+			</div>
+			<hr class="field" />
+
+			<div class="field">
+				<div class="right">
+					<input type="text" id="start_salary" value="28000" size="12" class="salary" />&nbsp;&nbsp;<span
+						class="input-suffix">per year</span>
+				</div>
+				<div class="left">
+					<label>What is the starting salary of your employee?</label>
+					<p>During last year, the median starting salary for men was $XXXX and for women was $XXXXX. Plan rules cap the
+						amount of salary that can be counted towards a pension at $106,800. Once that salary level is reached, future
+						increases may not exceed 3% per year.</p>
+				</div>
+			</div>
+			<hr class="field" />
+
+			<div class="field">
+				<div class="right">
+					<input type="text" id="annual_salary_increase" value="3" size="8" class="spinner-percent" />
+				</div>
+				<div class="left">
+					<label>What is the average salary increase given each working year?</label>
+					<p>Salary increases generally vary from year to year but, for purposes of this model, what average percent
+						increase would you assign each of the years worked until retirement. The average percent salary increase last year
+						was xxx.x% for men and xxx.x% for women.</p>
+				</div>
+			</div>
+			<hr class="field" />
+
+			<div class="field">
+				<div class="right">
+					<input type="text" id="state_contribution" value="6.2" size="8" class="spinner-percent" />&nbsp;&nbsp;<span
+						class="input-suffix">of salary </span>
+				</div>
+				<div class="left">
+					<label>What percent of employee salary will the State of Illinois pay into the plan? </label>
+					<p>The State of Illinois offers this plan in place of Social Security. If these these employees were covered by
+						Social Security, the State would be required to pay 6.2% of employee salary.</p>
+				</div>
+			</div>
+			<hr class="field" />
+
+			<div class="field">
+				<div class="right">
+					<input type="text" id="surs_net_earnings" value="7.5" size="8" class="spinner-percent" />
+				</div>
+				<div class="left">
+					<label>What percent investment returns would you expect each year both before and after retirement?</label>
+					<p>An employee/retiree may be in the plan for 40 or more years&mdash;20 working and 20 in retirement.
+						Investment returns vary from year to year but it is the long-term performance that counts. Between 1972 and 2010
+						(a 39-year period) the average net earnings of this plan has been a positive 8.91%.</p>
+				</div>
+			</div>
+			<hr class="field" />
+
+			<div class="field">
+				<div class="right">
+					<input type="text" id="age_retired" value="61" size="4" class="age" />
+				</div>
+				<div class="left">
+					<label>At what age will your employee retire?</label>
+					<p>During last year, the median age at retirement for women was xxx and for men was xxx.</p>
+				</div>
+			</div>
+
+			<hr class="field" />
+
+			<div class="field">
+				<div class="right">
+					<input type="text" id="age_death" value="75" size="4" class="age" />
+				</div>
+				<div class="left">
+					<label>At what age will your retiree die?</label>
+					<p>An unpleasant "fact of life" is we all will die&mdash;and the pension annuity ends. This past year the
+						median retiree age at death was xxx for women and xxx for men.</p>
+				</div>
+			</div>
+
+			<div class="buttons">
+				<div class="left">
+					<button id="calculate">Calculate</button>
+				</div>
+			</div>
+
+			<div id="problems">
+				<p>There are some problems with the values you entered:</p>
+				<ul id="problems"></ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

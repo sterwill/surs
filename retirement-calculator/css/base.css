@@ -1,0 +1,21 @@
+body {
+	margin: 40px;
+	font-size: .9em;
+}
+
+.ui-widget {
+}
+
+p {
+	line-height: 1.4em;
+}
+
+span.underline {
+	text-decoration: underline;
+}
+
+div.buttons {
+	text-align: center;
+}
+
+div.buttons button { margin: 1em;}

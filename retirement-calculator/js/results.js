@@ -1,108 +1,28 @@
-function getInput() {
-	// All inputs are strings to avoid using Javascript numbers in calculations
-	var input = {}
-	input.ageJoined = $('#age_joined').val();
-	input.ageRetired = $('#age_retired').val();
-	input.ageDeath = $('#age_death').val();
-	input.startingSalary = parseDollars($('#start_salary').val());
-	input.employeeContribution = parsePercent($('#employee_contribution').val());
-	input.stateContribution = parsePercent($('#state_contribution').val());
-	input.annualSalaryIncrease = parsePercent($('#annual_salary_increase').val());
-	input.sursNetEarnings = parsePercent($('#surs_net_earnings').val());
-	input.annualRetirementIncrease = parsePercent($('#annual_retirement_increase').val());
-	return input;
-}
+function recalculate() {
+	var input = getInput();
 
-function toggleAdvancedVisible() {
-	setAdvancedVisible(!$('.advanced').is(':visible'));
-}
+	if (validate(input)) {
+		$('div#table').stop().fadeTo('fast', 1);
 
-function setAdvancedVisible(visible) {
-	var advanced = $('.advanced');
-	if (advanced.is(':visible') != visible) {
-		advanced.fadeToggle('short');
-	}
+		var output = calculate(input);
 
-	if (visible) {
-		$('button#toggle-advanced span').text("Hide Advanced Settings");
-	} else {
-		$('button#toggle-advanced span').text("Show Advanced Settings");
-	}
-}
+		var tbody = $('table#results tbody');
+		tbody.empty();
 
-function fadeToggle(jObject, visible, duration, easing, callback) {
-	if (jObject.is(':visible') != visible) {
-		jObject.fadeToggle(duration, easing, callback);
-	}
-}
+		for ( var i = 0; i < output.years.length; i++) {
+			var year = output.years[i];
 
-function validate(input) {
-	var problems = [];
+			if (year.age == parseInt(input.ageRetired)) {
+				// Insert an additional information row
+				makeRetirementYearInfoRow(year, output).appendTo(tbody);
+			}
 
-	// We can use Javascript numbers for validation
-	var min_age = 10;
-	var min_salary = 1000;
-	var min_age_retired = 55;
-
-	if (parseInt(input.ageJoined) < min_age) {
-		problems.push("The age the employee joined SURS must be at least " + min_age);
-	}
-	if (parseInt(input.startingSalary) < min_salary) {
-		problems.push("Employee's starting salary must be at least " + min_salary);
-	}
-	if (parseInt(input.ageRetired) < min_age_retired) {
-		problems.push("Employee's retirement age must be at least " + min_age_retired);
-	}
-	if (parseInt(input.ageRetired) <= input.ageJoined) {
-		problems.push("Employee's age at retirement must be greater than the age employee joined SURS");
-	}
-	if (parseInt(input.ageDeath) <= input.ageRetired) {
-		problems.push("Employee's age at death must be greater than employee's retirement age");
-	}
-
-	if (problems.length > 0) {
-		fadeToggle($('div#problems'), true, 'slow');
-		$('ul#problems').empty();
-		for ( var i = 0; i < problems.length; i++) {
-			var li = $('<li>');
-			li.text(problems[i]);
-			li.appendTo($('ul#problems'));
+			makeYearRow(input, year).appendTo(tbody);
 		}
+
 	} else {
-		fadeToggle($('div#problems'), false, 'fast');
+		$('div#table').stop().fadeTo('slow', .25);
 	}
-
-	return problems.length === 0;
-}
-
-/**
- * Function adapted from http://www.reignwaterdesigns.com/ad/tidbits/ordinal/.
- * Copyright Addam Driver 2008.
- */
-function formatOrdinalHtml(num) {
-	var modOneHundred = num % 100;
-	var modTen = num % 10;
-	var ord;
-
-	if ((modOneHundred - modTen) == 10) {
-		ord = 'th';
-	} else {
-		switch (modTen) {
-		case 1:
-			ord = 'st';
-			break;
-		case 2:
-			ord = 'nd';
-			break;
-		case 3:
-			ord = 'rd';
-			break;
-		default:
-			ord = 'th';
-			break;
-		}
-	}
-	return num + '<sup>' + ord + '<\/sup>';
 }
 
 function makeRetirementYearInfoRow(year, output) {
@@ -158,33 +78,6 @@ function makeYearRow(input, year) {
 	tdRetirementFundBalance.appendTo(tr);
 
 	return tr;
-}
-
-function recalculate() {
-	var input = getInput();
-
-	if (validate(input)) {
-		$('table#results').stop().fadeTo('fast', 1);
-
-		var output = calculate(input);
-
-		var tbody = $('table#results tbody');
-		tbody.empty();
-
-		for ( var i = 0; i < output.years.length; i++) {
-			var year = output.years[i];
-
-			if (year.age == parseInt(input.ageRetired)) {
-				// Insert an additional information row
-				makeRetirementYearInfoRow(year, output).appendTo(tbody);
-			}
-
-			makeYearRow(input, year).appendTo(tbody);
-		}
-
-	} else {
-		$('table#results').stop().fadeTo('slow', .25);
-	}
 }
 
 function tier1Table() {
@@ -292,6 +185,14 @@ function calculate(input) {
 	var negativeOne = bd('-1');
 	var oneHundred = bd('100');
 
+	// Set by law to 8%
+	var employeeContribution = bd('.08');
+	// Set by law to 3%
+	var annualRetirementIncrease = bd('1.03');
+	// Salaray increases after this value are done at 3% by law
+	var maxPensionableSalary = bd('106800');
+	var maxPensionableSalaryIncrease = bd('1.03');
+
 	// Ages can stay a Javascript number
 	var ageJoined = parseInt(input.ageJoined);
 	var ageRetired = parseInt(input.ageRetired);
@@ -300,10 +201,8 @@ function calculate(input) {
 	// Convert the inputs strings to BigIntegers
 	var startingSalary = bd(input.startingSalary);
 	var annualSalaryIncrease = bd(input.annualSalaryIncrease).divide(oneHundred, mc).add(one, mc);
-	var employeeContribution = bd(input.employeeContribution).divide(oneHundred, mc);
 	var stateContribution = bd(input.stateContribution).divide(oneHundred, mc);
 	var sursNetEarnings = bd(input.sursNetEarnings).divide(oneHundred, mc);
-	var annualRetirementIncrease = bd(input.annualRetirementIncrease).divide(oneHundred, mc).add(one, mc);
 
 	output.yearsOfService = ageRetired - ageJoined;
 
@@ -329,6 +228,11 @@ function calculate(input) {
 			lastYear = output.years[y - 1];
 			if (thisYear.age < ageRetired) {
 				thisYear.annuity = zero;
+
+				var salaryIncrease;
+				if (lastYear.salary.compareTo(maxPensionableSalary) > 0) {
+					salaryIncrease = annualSalaryIncrease
+				}
 				thisYear.salary = lastYear.salary.multiply(annualSalaryIncrease, mc);
 				thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
 				thisYear.stateContribution = thisYear.salary.multiply(stateContribution, mc);
@@ -374,53 +278,4 @@ function calculate(input) {
 	}
 
 	return output;
-}
-
-/**
- * Formats a BigDecimal as an integer.
- */
-function formatInteger(value) {
-	return value.setScale(0, roundingMode()) + '';
-}
-
-/**
- * Formats a BigDecimal as a percentage.
- */
-function formatPercent(value) {
-	return value.multiply(bd('100')).setScale(2, roundingMode()) + '%';
-}
-
-/**
- * Formats a BigDecimal as a dollar string like '$1,000.00'.
- */
-function formatDollars(value, points) {
-	// return value + '';
-	if (points === null) {
-		points = 0;
-	}
-
-	var regex = /(\d+)(\d{3})/;
-	var result = ((isNaN(value) ? 0 : Math.abs(value)).toFixed(points)) + '';
-
-	while (regex.test(result)) {
-		result = result.replace(regex, '$1,$2');
-	}
-
-	return (value < 0 ? '-' : '') + '$' + result;
-}
-
-/**
- * Parses a string like '$1,000.00" into a string like '1000.00' for BigDecimal
- * to consume.
- */
-function parseDollars(value) {
-	return value.replace('$', '').replace(',', '');
-}
-
-/**
- * Parses a string like '5.25%' into a string like '5.25' for BigDecimal to
- * consume.
- */
-function parsePercent(value) {
-	return value.replace("%", '');
 }

@@ -1,0 +1,79 @@
+p.note {
+	font-style: italic;
+}
+
+div.results {
+	display: none;
+	padding: 14px;
+	font-size: 110%;
+}
+
+div#sufficient {
+	border: 1px solid green;
+	background-color: #ddffdd;
+}
+
+div#insufficient {
+	border: 1px solid #ccccaa;
+	background-color: #ffffdd;
+}
+
+span.output {
+	font-weight: bold;
+}
+
+span.input {
+	font-weight: bold;
+}
+
+div#results-table {
+	float: left;
+	clear: both;
+	padding: 14px;
+	display: none;
+}
+
+/*
+Table styles
+*/
+div#table {
+	float: left;
+}
+
+table#results {
+	border-collapse: collapse;
+}
+
+table#results tbody {
+	border-top: 2px solid #777777;
+	text-align: right;
+}
+
+table#results th {
+	padding: 0 10px 0 10px;
+	vertical-align: bottom;
+}
+
+table#results tr.in-retirement {
+	background-color: #f8f8ff;
+}
+
+table#results .retirement-info {
+	text-align: left;
+	/* A small size so it doesn't stretch the table. */
+	width: 200px;
+	color: #111199;
+	padding: 2px 0 12px 0;
+}
+
+table#results colgroup#contributions {
+	
+}
+
+table#results td {
+	padding: 0 10px 0 10px;
+}
+
+table#results td.underfunded {
+	color: #ff0000;
+}

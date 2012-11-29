@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Illinois Pension Reform – Some Sample Numbers</title>
+<link rel="stylesheet" type="text/css"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/ui-lightness/jquery-ui.css" />
+<link rel="stylesheet" href="external/btburnettSpinner/ui.spinner.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/results.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<script src="external/btburnettSpinner/ui.spinner.min.js"></script>
+<script src="external/BigDecimal.js/BigDecimal-all-last.js"></script>
+<script src="js/base.js"></script>
+<script src="js/results.js"></script>
+<script>
+	$(function() {
+		// Style controls
+		$('button#newPlan').button();
+		$('button#newPlan').click(function() {
+			history.go(-1);
+		});
+
+		$('button#viewTable').button();
+		$('button#viewTable').click(function() {
+		});
+
+		// Get input from query string
+		var input = getQueryParams();
+		$('span#results-age-joined').text(input.ageJoined);
+		$('span#results-starting-salary').text(formatDollars(input.startingSalary));
+		$('span#results-annual-salary-increase').text(input.annualSalaryIncrease);
+		$('span#results-age-retired').text(input.ageRetired);
+		$('span#results-state-contribution').text(input.stateContribution);
+		$('span#results-surs-net-earnings').text(input.sursNetEarnings);
+		$('span#results-age-death').text(input.ageDeath);
+
+		// Calculate
+		var output = calculate(input);
+
+		// Update page with results
+		var lastYear = output.years[output.years.length - 1];
+		var lastYearBalance = lastYear.retirementFundBalance;
+
+		if (lastYearBalance > 0) {
+			// Sufficient
+			$('div#sufficient').show();
+		} else {
+			// Insufficient, add up all the state payments
+			var stateTotal = 0;
+			for (i in output.years) {
+				var year = output.years[i];
+				if (year.age >= parseInt(input.ageRetired)) {
+					stateTotal += formatNumber(year.stateContribution, 2);
+				}
+			}
+
+			$('span#insufficient-balance').text(formatDollars(stateTotal));
+			$('div#insufficient').show();
+		}
+	});
+</script>
+<body>
+	<h2>Illinois Pension Reform – Your Results</h2>
+
+	<div>
+		<p>
+			Your sample retirement plan showed a <span class="input" id="results-age-joined"></span> year-old, first time plan
+			employee with a starting salary of <span class="input" id="results-starting-salary"></span>. Your plan provided for a
+			<span class="input" id="results-annual-salary-increase"></span>% average salary increase each working year until retirement at age
+			<span class="input" id="results-age-retired"></span>. You stipulated that the employer will match <span class="input"
+				id="results-state-contribution"></span>% of salary each year of employment and that the retirement plan will earn an
+			average net return of <span class="input" id="results-surs-net-earnings"></span>% over the employee’s working and
+			retirement years. Your retiree died at age <span class="input" id="results-age-death"></span>, ending the pension
+			annuity.
+		</p>
+		<p class="note">(By current law, your employee paid 8% of his/her gross salary into the plan each month from first
+			day of employment till retirement. After retirement, your retiree's annuity was increased 3% compounded, each year.)</p>
+	</div>
+
+	<div class="results" id="sufficient">
+		<h3>Congratulations!</h3>
+		<p class="sufficient">
+			Your plan provided a life-time annuity for your sample person. It also left a <span class="output"
+				id="sufficient-balance"></span> balance in the retirement plan for use by other retirees.
+		</p>
+	</div>
+
+	<div class="results" id="insufficient">
+		<p class="insufficient">
+			Sorry, your plan did not meet the goal of funding a life-time retirement and required the State to pay the final <span
+				class="output" id="insufficient-balance"></span> of the retiree's pension annuity. You can adjust your assumptions
+			about either (or both) the employer's salary match or the estimated plan investment earnings.
+		</p>
+	</div>
+
+	<div class="buttons">
+		<button id="viewTable">View the year by year results of your plan</button>
+		<button id="newPlan">Adjust your plan</button>
+	</div>
+
+	<div id="results-table" class="ui-widget">
+		<table id="results">
+			<col id="age" />
+			<col id="salary" />
+			<col id="annuity" />
+			<colgroup id="contributions" span="2">
+				<col id="employee_contribution" />
+				<col id="state_contribution" />
+			</colgroup>
+			<col id="surs_earnings" />
+			<col id="retirement_fund_balance" />
+			<thead>
+				<tr>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th colspan="2">Contributions</th>
+					<th>SURS</th>
+					<th>Retirement</th>
+				</tr>
+				<tr>
+					<th>Age</th>
+					<th>Salary</th>
+					<th>Annuity</th>
+					<th>Employee</th>
+					<th>State</th>
+					<th>Earnings</th>
+					<th>Fund Balance</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<td />
+					<td id="total_salary" />
+					<td id="total_annuity" />
+					<td id="total_employee_contribution" />
+					<td id="total_state_contribution" />
+					<td id="total_surs_earnings" />
+					<td />
+				</tr>
+				<tr>
+					<td />
+					<td />
+					<td />
+					<td id="percent_employee_contribution" />
+					<td id="percent_state_contribution" />
+					<td id="percent_surs_earnings" />
+					<td />
+				</tr>
+			</tfoot>
+			<tbody />
+		</table>
+	</div>
+</body>
+</html>
