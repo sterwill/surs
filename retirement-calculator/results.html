@@ -24,6 +24,16 @@
 
 		$('button#viewTable').button();
 		$('button#viewTable').click(function() {
+			var width = $(window).width() * .75;
+			var height = $(window).height() - 80;
+			$('div#results-dialog').dialog({
+				modal : true,
+				resizable : false,
+				width : width,
+				height : height,
+				maxHeight : height,
+				draggable : false,
+			});
 		});
 
 		// Get input from query string
@@ -45,6 +55,7 @@
 
 		if (lastYearBalance > 0) {
 			// Sufficient
+			$('span#sufficient-balance').text(formatDollars(lastYearBalance));
 			$('div#sufficient').show();
 		} else {
 			// Insufficient, add up all the state payments
@@ -68,12 +79,12 @@
 		<p>
 			Your sample retirement plan showed a <span class="input" id="results-age-joined"></span> year-old, first time plan
 			employee with a starting salary of <span class="input" id="results-starting-salary"></span>. Your plan provided for a
-			<span class="input" id="results-annual-salary-increase"></span>% average salary increase each working year until retirement at age
-			<span class="input" id="results-age-retired"></span>. You stipulated that the employer will match <span class="input"
-				id="results-state-contribution"></span>% of salary each year of employment and that the retirement plan will earn an
-			average net return of <span class="input" id="results-surs-net-earnings"></span>% over the employee’s working and
-			retirement years. Your retiree died at age <span class="input" id="results-age-death"></span>, ending the pension
-			annuity.
+			<span class="input" id="results-annual-salary-increase"></span>% average salary increase each working year until
+			retirement at age <span class="input" id="results-age-retired"></span>. You stipulated that the employer will match <span
+				class="input" id="results-state-contribution"></span>% of salary each year of employment and that the retirement
+			plan will earn an average net return of <span class="input" id="results-surs-net-earnings"></span>% over the
+			employee’s working and retirement years. Your retiree died at age <span class="input" id="results-age-death"></span>,
+			ending the pension annuity.
 		</p>
 		<p class="note">(By current law, your employee paid 8% of his/her gross salary into the plan each month from first
 			day of employment till retirement. After retirement, your retiree's annuity was increased 3% compounded, each year.)</p>
@@ -88,8 +99,9 @@
 	</div>
 
 	<div class="results" id="insufficient">
+		<h3>Sorry!</h3>
 		<p class="insufficient">
-			Sorry, your plan did not meet the goal of funding a life-time retirement and required the State to pay the final <span
+			Your plan did not meet the goal of funding a life-time retirement and required the State to pay the final <span
 				class="output" id="insufficient-balance"></span> of the retiree's pension annuity. You can adjust your assumptions
 			about either (or both) the employer's salary match or the estimated plan investment earnings.
 		</p>
@@ -100,7 +112,8 @@
 		<button id="newPlan">Adjust your plan</button>
 	</div>
 
-	<div id="results-table" class="ui-widget">
+	<div id="results-dialog" class="ui-widget" title="Year by Year Results of Your Plan">
+		<p class="note">Press escape or click the close button at the upper-right to close this window.</p>
 		<table id="results">
 			<col id="age" />
 			<col id="salary" />

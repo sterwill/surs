@@ -1,27 +1,16 @@
-function recalculate() {
-	var input = getInput();
+function updateResultsTable(input, output) {
+	var tbody = $('table#results tbody');
+	tbody.empty();
 
-	if (validate(input)) {
-		$('div#table').stop().fadeTo('fast', 1);
+	for ( var i = 0; i < output.years.length; i++) {
+		var year = output.years[i];
 
-		var output = calculate(input);
-
-		var tbody = $('table#results tbody');
-		tbody.empty();
-
-		for ( var i = 0; i < output.years.length; i++) {
-			var year = output.years[i];
-
-			if (year.age == parseInt(input.ageRetired)) {
-				// Insert an additional information row
-				makeRetirementYearInfoRow(year, output).appendTo(tbody);
-			}
-
-			makeYearRow(input, year).appendTo(tbody);
+		if (year.age == parseInt(input.ageRetired)) {
+			// Insert an additional information row
+			makeRetirementYearInfoRow(year, output).appendTo(tbody);
 		}
 
-	} else {
-		$('div#table').stop().fadeTo('slow', .25);
+		makeYearRow(input, year).appendTo(tbody);
 	}
 }
 
@@ -276,6 +265,8 @@ function calculate(input) {
 
 		output.years.push(thisYear);
 	}
+	
+	updateResultsTable(input, output);
 
 	return output;
 }

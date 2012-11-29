@@ -14,8 +14,8 @@ div#sufficient {
 }
 
 div#insufficient {
-	border: 1px solid #ccccaa;
-	background-color: #ffffdd;
+	border: 1px solid #ccaaaa;
+	background-color: #ffdddd;
 }
 
 span.output {
@@ -26,22 +26,19 @@ span.input {
 	font-weight: bold;
 }
 
-div#results-table {
-	float: left;
-	clear: both;
+div#results-dialog {
 	padding: 14px;
 	display: none;
+	background-color: white;
+	text-align: center;
 }
 
 /*
 Table styles
 */
-div#table {
-	float: left;
-}
-
 table#results {
 	border-collapse: collapse;
+	margin: 30px auto 60px auto;
 }
 
 table#results tbody {
