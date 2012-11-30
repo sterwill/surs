@@ -19,6 +19,10 @@ div#problems {
 	display: none;
 }
 
+div#return-history-dialog {
+	display: none;
+}
+
 div#problems p,div#problems li {
 	color: #880000;
 }
@@ -71,4 +75,52 @@ div.field span.input-suffix {
 
 div.field .ui-spinner {
 	
+}
+
+/*
+Table styles
+*/
+table#return-history {
+	border-collapse: collapse;
+	margin: 30px auto 60px auto;
+}
+
+table#return-history tbody {
+	border-top: 2px solid #777777;
+	text-align: right;
+}
+
+table#return-history tfoot {
+	border-top: 2px solid #777777;
+	text-align: right;
+	color: blue;
+}
+
+table#return-history th {
+	padding: 0 10px 0 10px;
+	vertical-align: bottom;
+}
+
+table#return-history tr.in-retirement {
+	background-color: #f8f8ff;
+}
+
+table#return-history .retirement-info {
+	text-align: left;
+	/* A small size so it doesn't stretch the table. */
+	width: 200px;
+	color: #111199;
+	padding: 2px 0 12px 0;
+}
+
+table#return-history colgroup#contributions {
+	
+}
+
+table#return-history td {
+	padding: 0 10px 0 10px;
+}
+
+table#return-history td.underfunded {
+	color: #ff0000;
 }
