@@ -21,6 +21,7 @@ div#problems {
 
 div#return-history-dialog {
 	display: none;
+	background-color: white;
 }
 
 div#problems p,div#problems li {

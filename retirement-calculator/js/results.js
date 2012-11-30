@@ -240,11 +240,12 @@ function calculate(input) {
 			if (thisYear.age < ageRetired) {
 				thisYear.annuity = zero;
 
-				var salaryIncrease;
+				var salaryIncrease = annualSalaryIncrease;
 				if (lastYear.salary.compareTo(maxPensionableSalary) > 0) {
-					salaryIncrease = annualSalaryIncrease
+					salaryIncrease = maxPensionableSalaryIncrease;
 				}
-				thisYear.salary = lastYear.salary.multiply(annualSalaryIncrease, mc);
+
+				thisYear.salary = lastYear.salary.multiply(salaryIncrease, mc);
 				thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
 				thisYear.stateContribution = thisYear.salary.multiply(stateContribution, mc);
 				thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
