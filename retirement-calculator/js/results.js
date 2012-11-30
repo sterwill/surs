@@ -242,24 +242,19 @@ function calculate(input) {
 				thisYear.annuity = zero;
 
 				if (reachedMaxPensionableSalary) {
-					/*
-					 * We reached the maximum pensionable salary in a previous
-					 * year, use the maximum increase for this year.
-					 */
+					// We reached the maximum pensionable salary in a previous
+					// year, use the maximum allowable increase for this year.
 					thisYear.salary = lastYear.salary.multiply(maxPensionableSalaryIncrease, mc);
-				} else if (lastYear.salary.multiply(annualSalaryIncrease, mc).compareTo(maxPensionableSalary) > 0) {
-					/*
-					 * We reached the maximum pensionable salary this year, cap
-					 * it.
-					 */
-					thisYear.salary = maxPensionableSalary;
-					reachedMaxPensionableSalary = true;
 				} else {
-					/*
-					 * We're below the maximum pensionable salary, apply the
-					 * user's increase.
-					 */
+					// Calculate with the user's provided increase
 					thisYear.salary = lastYear.salary.multiply(annualSalaryIncrease, mc);
+
+					// Cap the salary if it exceeds the maximum pensionable
+					// salary
+					if (thisYear.salary.compareTo(maxPensionableSalary) > 0) {
+						reachedMaxPensionableSalary = true;
+						thisYear.salary = maxPensionableSalary;
+					}
 				}
 
 				thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
