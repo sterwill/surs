@@ -12,6 +12,20 @@ function updateResultsTable(input, output) {
 
 		makeYearRow(input, year).appendTo(tbody);
 	}
+
+	updateFooter(output);
+}
+
+function updateFooter(output) {
+	$('td#total_salary').text(formatDollars(output.totalSalary));
+	$('td#total_annuity').text(formatDollars(output.totalAnnuity));
+	$('td#total_employee_contribution').text(formatDollars(output.totalEmployeeContribution));
+	$('td#total_state_contribution').text(formatDollars(output.totalStateContribution));
+	$('td#total_surs_earnings').text(formatDollars(output.totalSursEarnings));
+
+	$('td#percent_employee_contribution').text(formatPercent(output.percentEmployeeEarnings));
+	$('td#percent_state_contribution').text(formatPercent(output.percentStateEarnings));
+	$('td#percent_surs_earnings').text(formatPercent(output.percentSursEarnings));
 }
 
 function makeRetirementYearInfoRow(year, output) {
@@ -201,6 +215,14 @@ function calculate(input) {
 	output.finalAverageEarningsYears = 0;
 
 	output.years = []
+
+	// totals
+	output.totalSalary = zero;
+	output.totalAnnuity = zero;
+	output.totalEmployeeContribution = zero;
+	output.totalStateContribution = zero;
+	output.totalSursEarnings = zero;
+
 	for ( var y = 0; y <= ageDeath - ageJoined; y++) {
 		thisYear = {};
 		thisYear.age = ageJoined + y;
@@ -264,8 +286,22 @@ function calculate(input) {
 		}
 
 		output.years.push(thisYear);
+
+		// Totals
+		output.totalSalary = output.totalSalary.add(thisYear.salary, mc);
+		output.totalAnnuity = output.totalAnnuity.add(thisYear.annuity, mc);
+		output.totalEmployeeContribution = output.totalEmployeeContribution.add(thisYear.employeeContribution, mc);
+		output.totalStateContribution = output.totalStateContribution.add(thisYear.stateContribution, mc);
+		output.totalSursEarnings = output.totalSursEarnings.add(thisYear.sursEarnings, mc);
 	}
-	
+
+	// Percentages
+	var totalContributions = output.totalEmployeeContribution.add(output.totalStateContribution, mc).add(
+			output.totalSursEarnings, mc);
+	output.percentEmployeeEarnings = output.totalEmployeeContribution.divide(totalContributions, mc);
+	output.percentStateEarnings = output.totalStateContribution.divide(totalContributions, mc);
+	output.percentSursEarnings = output.totalSursEarnings.divide(totalContributions, mc);
+
 	updateResultsTable(input, output);
 
 	return output;
