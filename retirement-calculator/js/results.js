@@ -223,6 +223,7 @@ function calculate(input) {
 	output.totalStateContribution = zero;
 	output.totalSursEarnings = zero;
 
+	var reachedMaxPensionableSalary = false;
 	for ( var y = 0; y <= ageDeath - ageJoined; y++) {
 		thisYear = {};
 		thisYear.age = ageJoined + y;
@@ -240,12 +241,27 @@ function calculate(input) {
 			if (thisYear.age < ageRetired) {
 				thisYear.annuity = zero;
 
-				var salaryIncrease = annualSalaryIncrease;
-				if (lastYear.salary.compareTo(maxPensionableSalary) > 0) {
-					salaryIncrease = maxPensionableSalaryIncrease;
+				if (reachedMaxPensionableSalary) {
+					/*
+					 * We reached the maximum pensionable salary in a previous
+					 * year, use the maximum increase for this year.
+					 */
+					thisYear.salary = lastYear.salary.multiply(maxPensionableSalaryIncrease, mc);
+				} else if (lastYear.salary.multiply(annualSalaryIncrease, mc).compareTo(maxPensionableSalary) > 0) {
+					/*
+					 * We reached the maximum pensionable salary this year, cap
+					 * it.
+					 */
+					thisYear.salary = maxPensionableSalary;
+					reachedMaxPensionableSalary = true;
+				} else {
+					/*
+					 * We're below the maximum pensionable salary, apply the
+					 * user's increase.
+					 */
+					thisYear.salary = lastYear.salary.multiply(annualSalaryIncrease, mc);
 				}
 
-				thisYear.salary = lastYear.salary.multiply(salaryIncrease, mc);
 				thisYear.employeeContribution = thisYear.salary.multiply(employeeContribution, mc);
 				thisYear.stateContribution = thisYear.salary.multiply(stateContribution, mc);
 				thisYear.sursEarnings = lastYear.retirementFundBalance.multiply(sursNetEarnings, mc);
