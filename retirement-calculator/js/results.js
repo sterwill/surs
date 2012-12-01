@@ -304,8 +304,11 @@ function calculate(input) {
 		output.totalAnnuity = output.totalAnnuity.add(thisYear.annuity, mc);
 		output.totalEmployeeContribution = output.totalEmployeeContribution.add(thisYear.employeeContribution, mc);
 		output.totalStateContribution = output.totalStateContribution.add(thisYear.stateContribution, mc);
-		output.totalSursEarnings = output.totalSursEarnings.add(thisYear.sursEarnings, mc);
 	}
+
+	// Totals
+	output.totalSursEarnings = output.totalAnnuity.subtract(output.totalEmployeeContribution, mc).subtract(
+			output.totalStateContribution, mc);
 
 	// Percentages
 	var totalContributions = output.totalEmployeeContribution.add(output.totalStateContribution, mc).add(
