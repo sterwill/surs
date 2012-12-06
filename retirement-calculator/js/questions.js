@@ -41,11 +41,11 @@ function validate(input) {
 
 	if (problems.length > 0) {
 		fadeToggle($('div#problems'), true, 'slow');
-		$('ul#problems').empty();
+		$('ul#problems-list').empty();
 		for ( var i = 0; i < problems.length; i++) {
 			var li = $('<li>');
 			li.text(problems[i]);
-			li.appendTo($('ul#problems'));
+			li.appendTo($('ul#problems-list'));
 		}
 	} else {
 		fadeToggle($('div#problems'), false, 'fast');
