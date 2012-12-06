@@ -12,6 +12,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
 <script src="external/btburnettSpinner/ui.spinner.min.js"></script>
 <script src="external/BigDecimal.js/BigDecimal-all-last.js"></script>
+<script src="external/jquery.jqprint-0.3.js/jquery.jqprint-0.3.js"></script>
 <script src="js/base.js"></script>
 <script src="js/results.js"></script>
 <script>
@@ -34,6 +35,11 @@
 				maxHeight : height,
 				draggable : false,
 			});
+		});
+
+		$('button#print').button();
+		$('button#print').click(function() {
+			$('div#results-container').jqprint();
 		});
 
 		// Get input from query string
@@ -114,57 +120,62 @@
 
 	<div id="results-dialog" class="ui-widget" title="Year by Year Results of Your Plan">
 		<p class="note">Press escape or click the close button at the upper-right to close this window.</p>
-		<table id="results">
-			<col id="age" />
-			<col id="salary" />
-			<col id="annuity" />
-			<colgroup id="contributions" span="2">
-				<col id="employee_contribution" />
-				<col id="state_contribution" />
-			</colgroup>
-			<col id="surs_earnings" />
-			<col id="retirement_fund_balance" />
-			<thead>
-				<tr>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th colspan="2">Contributions</th>
-					<th>SURS</th>
-					<th>Retirement</th>
-				</tr>
-				<tr>
-					<th>Age</th>
-					<th>Salary</th>
-					<th>Annuity</th>
-					<th>Employee</th>
-					<th>State</th>
-					<th>Earnings</th>
-					<th>Fund Balance</th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<td />
-					<td id="total_salary" />
-					<td id="total_annuity" />
-					<td id="total_employee_contribution" />
-					<td id="total_state_contribution" />
-					<td id="total_surs_earnings" />
-					<td />
-				</tr>
-				<tr>
-					<td />
-					<td />
-					<td />
-					<td id="percent_employee_contribution" />
-					<td id="percent_state_contribution" />
-					<td id="percent_surs_earnings" />
-					<td />
-				</tr>
-			</tfoot>
-			<tbody />
-		</table>
+		<p>
+			<button id="print">Print this table</button>
+		</p>
+		<div id="results-container">
+			<table id="results">
+				<col id="age" />
+				<col id="salary" />
+				<col id="annuity" />
+				<colgroup id="contributions" span="2">
+					<col id="employee_contribution" />
+					<col id="state_contribution" />
+				</colgroup>
+				<col id="surs_earnings" />
+				<col id="retirement_fund_balance" />
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th colspan="2">Contributions</th>
+						<th>SURS</th>
+						<th>Retirement</th>
+					</tr>
+					<tr>
+						<th>Age</th>
+						<th>Salary</th>
+						<th>Annuity</th>
+						<th>Employee</th>
+						<th>State</th>
+						<th>Earnings</th>
+						<th>Fund Balance</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<td />
+						<td id="total_salary" />
+						<td id="total_annuity" />
+						<td id="total_employee_contribution" />
+						<td id="total_state_contribution" />
+						<td id="total_surs_earnings" />
+						<td />
+					</tr>
+					<tr>
+						<td />
+						<td />
+						<td />
+						<td id="percent_employee_contribution" />
+						<td id="percent_state_contribution" />
+						<td id="percent_surs_earnings" />
+						<td />
+					</tr>
+				</tfoot>
+				<tbody />
+			</table>
+		</div>
 	</div>
 </body>
 </html>
