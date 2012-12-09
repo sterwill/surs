@@ -24,6 +24,11 @@ div#return-history-dialog {
 	background-color: white;
 }
 
+div#contribution-history-dialog {
+	display: none;
+	background-color: white;
+}
+
 div#problems p,div#problems li {
 	color: #880000;
 }
