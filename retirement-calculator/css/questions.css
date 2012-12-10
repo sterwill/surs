@@ -13,10 +13,9 @@ div#retirement-calculator-form {
 	margin-bottom: 60px;
 }
 
-div#problems {
-	float: left;
-	clear: both;
+div#problems-dialog {
 	display: none;
+	background-color: white;
 }
 
 div#return-history-dialog {
@@ -31,6 +30,7 @@ div#contribution-history-dialog {
 
 div#problems p,div#problems li {
 	color: #880000;
+	margin-top: .5em;
 }
 
 hr.field {

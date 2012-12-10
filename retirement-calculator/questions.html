@@ -21,7 +21,26 @@
 		$('button#calculate').button();
 		$('button#calculate').click(function() {
 			var input = getInput();
-			if (validate(input)) {
+			var problems = validate(input);
+			if (problems.length > 0) {
+				$('ul#problems-list').empty();
+				for ( var i = 0; i < problems.length; i++) {
+					var li = $('<li>');
+					li.text(problems[i]);
+					li.appendTo($('ul#problems-list'));
+				}
+		
+				var width = $(window).width() * .80;
+				var height = $(window).height() * .60;
+				$('div#problems-dialog').dialog({
+					modal : true,
+					resizable : false,
+					width : width,
+					height : height,
+					maxHeight : height,
+					draggable : false,
+				});
+			} else {
 				window.location.href = 'results.html?' + makeQueryString(input);
 			}
 		});
@@ -189,11 +208,13 @@
 					<button id="calculate">Calculate</button>
 				</div>
 			</div>
+		</div>
+	</div>
 
-			<div id="problems">
-				<p>There are some problems with the values you entered:</p>
-				<ul id="problems-list"></ul>
-			</div>
+	<div id="problems-dialog" title="Problems">
+		<p>There are some problems with the values you entered:</p>
+		<div id="problems">
+			<ul id="problems-list"></ul>
 		</div>
 	</div>
 
