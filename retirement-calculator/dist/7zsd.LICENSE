@@ -1,0 +1,15 @@
+7zsd.sfx is from http://7zsfx.info/en/, which is a modified version
+of 7-Zip.  Redistribution of 7-Zip is allowed under the terms of 
+the LGPL (see 7Z-LICENSE for full details).
+
+The 7-Zip FAQ says:
+
+  Can I use the EXE or DLL files from 7-Zip in a Commercial Application?
+
+  Yes, but you are required to specify in your documentation (1) that 
+  you used parts of the 7-Zip program, (2) that 7-Zip is licensed under
+  the GNU LGPL license and (3) you must give a link to www.7-zip.org, 
+  where the source code can be found.
+
+So head on over to http://www.7-zip.org for the source code
+to 7z.sfx.

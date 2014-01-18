@@ -1,0 +1,5 @@
+;!@Install@!UTF-8!
+RunProgram="nowait:questions.html"
+GUIMode="2"
+InstallPath="%TEMP%\\Squeezy"
+;!@InstallEnd@!
