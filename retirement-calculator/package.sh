@@ -9,9 +9,10 @@ OUTPUT="$BASE/squeezy.exe"
 rm -f "$OUTPUT"
 mkdir -p "$FILES"
 cp -r \
-  "$BASE"/js \
   "$BASE"/css \
   "$BASE"/external \
+  "$BASE"/images \
+  "$BASE"/js \
   "$BASE"/questions.html \
   "$BASE"/results.html \
   "$FILES"
