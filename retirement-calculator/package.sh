@@ -19,6 +19,6 @@ cp -r \
 7z a "$TMP"/squeezy.7z "$FILES"/*
 
 # 7zsd.sfx is the Windows SFX stub
-cat "$BASE"/dist/7zsd.sfx "$BASE"/dist/config.txt "$TMP"/squeezy.7z > "$OUTPUT"
+cat "$BASE"/dist/7zsd-squeezy.sfx "$BASE"/dist/config.txt "$TMP"/squeezy.7z > "$OUTPUT"
 
 rm -r "$TMP"
